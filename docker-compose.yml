@@ -12,4 +12,4 @@ services:
     volumes:
       - "./app:/app"
     ports:
-      - "8080:8080"
+      - "8001:8001"
