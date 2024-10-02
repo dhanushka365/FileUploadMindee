@@ -11,6 +11,7 @@ try:
     from flask_apispec import marshal_with, doc, use_kwargs
     from werkzeug.utils import secure_filename
     from mindee import Client, AsyncPredictResponse, product
+    import json
     print("All imports are ok............")
 except Exception as e:
     print("Error: {} ".format(e))
@@ -21,7 +22,6 @@ UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "uploads")
 # Ensure the upload directory exists
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
-
 
 # Schema for file upload request
 class FileUploadSchema(Schema):
@@ -75,11 +75,39 @@ class FileUploadController(MethodResource, Resource):
                 endpoint=my_endpoint
             )
 
-            mindee_data = result.document.inference.prediction
-            print(mindee_data)
+            # Assuming you have your result from Mindee
+            mindee_data = result.document.inference.prediction.fields
+
+            # Function to extract values from Mindee fields
+            def extract_field_value(field):
+                # Check the type of the field dynamically
+                field_type = type(field)
+
+                if "StringField" in str(field_type):
+                    return field.value  # Directly return the string value
+                elif "GeneratedListField" in str(field_type):
+                    # If it's a list, use a method to get the items instead of accessing 'value'
+                    return [extract_field_value(item) for item in field.values]  # Use items or similar method
+                elif "GeneratedObjectField" in str(field_type):
+                    # Access fields as attributes or another structure
+                    return {key: extract_field_value(getattr(field, key)) for key in dir(field) if
+                            not key.startswith('__')}
+                else:
+                    return str(field)  # Fallback for unexpected types
+
+            # Create a cleaned dictionary with extracted values
+            cleaned_data = {key: extract_field_value(value) for key, value in mindee_data.items()}
+
+            # Convert cleaned_data to a JSON string with pretty print
+            mindee_data_string = json.dumps(cleaned_data, indent=4)
+
+            # Output the cleaned JSON string
+            print(mindee_data_string)
+
+
             return {
                 'message': 'File uploaded and processed successfully',
-                'file_path': file_path
+                'result': mindee_data_string
             }, 201
 
         except Exception as e:
