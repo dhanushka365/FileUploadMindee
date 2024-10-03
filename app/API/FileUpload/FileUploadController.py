@@ -169,7 +169,7 @@ class FileUploadController(MethodResource, Resource):
                 # Fallback if no specific match is found
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
-                    endpoint_name="default_repair",
+                    endpoint_name="commonworkorder_new",
                     version="1"
                 )
 
