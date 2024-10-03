@@ -113,7 +113,7 @@ class FileUploadController(MethodResource, Resource):
                 # Add endpoint for Haart
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
-                    endpoint_name="haart_repair",
+                    endpoint_name="haart_replacement",
                     version="1"
                 )
             elif extracted_filename == 'Hamptons':
@@ -130,11 +130,11 @@ class FileUploadController(MethodResource, Resource):
                     endpoint_name="kfh_repair",
                     version="1"
                 )
-            elif extracted_filename == 'Mash and Parson':
+            elif extracted_filename == 'Mash':
                 # Add endpoint for Mash and Parson
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
-                    endpoint_name="mashandparson_repair",
+                    endpoint_name="mash_and_parson_replacement",
                     version="1"
                 )
             elif extracted_filename == 'MyLako':
@@ -144,18 +144,18 @@ class FileUploadController(MethodResource, Resource):
                     endpoint_name="mylako_repair",
                     version="1"
                 )
-            elif extracted_filename == 'Savills Picture House':
+            elif extracted_filename == 'Savills':
                 # Add endpoint for Savills Picture House
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
-                    endpoint_name="savillspicturehouse_repair",
+                    endpoint_name="savills_picture_house_repair",
                     version="1"
                 )
-            elif extracted_filename == 'Squires Estates':
+            elif extracted_filename == 'Squires':
                 # Add endpoint for Squires Estates
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
-                    endpoint_name="squiresestates_repair",
+                    endpoint_name="squires_estates_repair",
                     version="1"
                 )
             elif extracted_filename == 'APW':
@@ -207,6 +207,8 @@ class FileUploadController(MethodResource, Resource):
 
             print(type(mindee_data_string))
 
+            if os.path.exists(file_path):
+                os.remove(file_path)  # Remove the file to save server storage
 
             return {
                 'message': 'File uploaded and processed successfully',
@@ -222,8 +224,8 @@ class FileUploadController(MethodResource, Resource):
 
 KEYWORDS = [
     "Benham", "CBRE", "Chestertons", "Cluttons", "Countrywide",
-    "GCP", "Haart", "Hamptons", "KFH", "Mash and Parson", "MyLako",
-    "Savills Picture House", "Squires Estates" ,"APW"
+    "GCP", "Haart", "Hamptons", "KFH", "Mash", "MyLako",
+    "Savills", "Squires", "APW"
 ]
 def extract_filename_from_pdf(file_path):
     with pdfplumber.open(file_path) as pdf:
