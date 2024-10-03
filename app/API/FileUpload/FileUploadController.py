@@ -1,3 +1,5 @@
+
+
 try:
     import os
     import tempfile
@@ -12,6 +14,7 @@ try:
     from werkzeug.utils import secure_filename
     from mindee import Client, AsyncPredictResponse, product
     import json
+    import pdfplumber
     print("All imports are ok............")
 except Exception as e:
     print("Error: {} ".format(e))
@@ -54,21 +57,124 @@ class FileUploadController(MethodResource, Resource):
             # Save the file to the upload directory
             file.save(file_path)
             print(f"File saved to: {file_path}")
+
+            # Use the utility function to extract the filename
+            extracted_filename = extract_filename_from_pdf(file_path)
+            print(f"Extracted filename: {extracted_filename}")
+
+
             # Init a new client
             mindee_client = Client(api_key="e0611a74d21d266a82f538946afccd3d")
 
-            # Add the corresponding endpoint (document). Set the account_name to "mindee" if you are using OTS.
-            my_endpoint = mindee_client.create_endpoint(
-                account_name="SmarterDev",
-                endpoint_name="benhamreeves_repair",
-                version="1"
-            )
+            # Set up logic based on the extracted filename
+            if extracted_filename == 'Benham':
+                # Add endpoint for Benham&Reeves
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="benhamreeves_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'CBRE':
+                # Add endpoint for CBRE
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="cbre_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Chestertons':
+                # Add endpoint for Chestertons
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="chestertons_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Cluttons':
+                # Add endpoint for Cluttons
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="cluttons_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Countrywide':
+                # Add endpoint for Countrywide
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="countrywide_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'GCP':
+                # Add endpoint for GCP
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="gcp_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Haart':
+                # Add endpoint for Haart
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="haart_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Hamptons':
+                # Add endpoint for Hamptons
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="hamptons_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'KFH':
+                # Add endpoint for KFH
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="kfh_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Mash and Parson':
+                # Add endpoint for Mash and Parson
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="mashandparson_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'MyLako':
+                # Add endpoint for MyLako
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="mylako_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Savills Picture House':
+                # Add endpoint for Savills Picture House
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="savillspicturehouse_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'Squires Estates':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="squiresestates_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'APW':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="apw_repair",
+                    version="1"
+                )
+            else:
+                # Fallback if no specific match is found
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="default_repair",
+                    version="1"
+                )
 
-            # Load a file from disk
             input_doc = mindee_client.source_from_path(file_path)
 
-            # Parse the file.
-            # The endpoint must be specified since it cannot be determined from the class.
             result: AsyncPredictResponse = mindee_client.enqueue_and_parse(
                 product.GeneratedV1,
                 input_doc,
@@ -78,7 +184,6 @@ class FileUploadController(MethodResource, Resource):
             # Assuming you have your result from Mindee
             mindee_data = result.document.inference.prediction.fields
 
-            # Function to extract values from Mindee fields and remove unnecessary fields
             def extract_field_value(field):
                 field_type = type(field)
                 if "StringField" in str(field_type):
@@ -94,15 +199,12 @@ class FileUploadController(MethodResource, Resource):
                                                                  '_str_level']
                     }
                 else:
-                    return str(field)  # Fallback for unexpected types
+                    return str(field)
 
-            # Create a cleaned dictionary with extracted values
             cleaned_data = {key: extract_field_value(value) for key, value in mindee_data.items()}
 
-            # Convert cleaned_data to a JSON string with pretty print
             mindee_data_string = json.dumps(cleaned_data, indent=4)
 
-            # Output the cleaned JSON string
             print(type(mindee_data_string))
 
 
@@ -116,3 +218,22 @@ class FileUploadController(MethodResource, Resource):
                 os.remove(file_path)  # Remove the file if processing fails
             return {'message': 'Failed to process file with Mindee', 'error': str(e)}, 500
 
+
+
+KEYWORDS = [
+    "Benham", "CBRE", "Chestertons", "Cluttons", "Countrywide",
+    "GCP", "Haart", "Hamptons", "KFH", "Mash and Parson", "MyLako",
+    "Savills Picture House", "Squires Estates" ,"APW"
+]
+def extract_filename_from_pdf(file_path):
+    with pdfplumber.open(file_path) as pdf:
+        first_page = pdf.pages[0]
+        text = first_page.extract_text()
+
+        for keyword in KEYWORDS:
+            if keyword.lower() in text.lower():
+                print(f"Keyword found: {keyword}")
+                return secure_filename(keyword)
+
+        print("No keyword found.")
+        return "not found"
