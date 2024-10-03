@@ -78,20 +78,21 @@ class FileUploadController(MethodResource, Resource):
             # Assuming you have your result from Mindee
             mindee_data = result.document.inference.prediction.fields
 
-            # Function to extract values from Mindee fields
+            # Function to extract values from Mindee fields and remove unnecessary fields
             def extract_field_value(field):
-                # Check the type of the field dynamically
                 field_type = type(field)
-
                 if "StringField" in str(field_type):
                     return field.value  # Directly return the string value
                 elif "GeneratedListField" in str(field_type):
-                    # If it's a list, use a method to get the items instead of accessing 'value'
-                    return [extract_field_value(item) for item in field.values]  # Use items or similar method
+                    return [extract_field_value(item) for item in field.values]  # Handle list fields
                 elif "GeneratedObjectField" in str(field_type):
-                    # Access fields as attributes or another structure
-                    return {key: extract_field_value(getattr(field, key)) for key in dir(field) if
-                            not key.startswith('__')}
+                    # Remove unwanted fields from the object
+                    return {
+                        key: extract_field_value(getattr(field, key)) for key in dir(field)
+                        if
+                        not key.startswith('__') and key not in ['page_id', '_GeneratedObjectField__printable_values',
+                                                                 '_str_level']
+                    }
                 else:
                     return str(field)  # Fallback for unexpected types
 
@@ -102,12 +103,12 @@ class FileUploadController(MethodResource, Resource):
             mindee_data_string = json.dumps(cleaned_data, indent=4)
 
             # Output the cleaned JSON string
-            print(mindee_data_string)
+            print(type(mindee_data_string))
 
 
             return {
                 'message': 'File uploaded and processed successfully',
-                'result': mindee_data_string
+                'result': json.loads(mindee_data_string)
             }, 201
 
         except Exception as e:
