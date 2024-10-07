@@ -130,7 +130,7 @@ class FileUploadController(MethodResource, Resource):
                     endpoint_name="kfh_repair",
                     version="1"
                 )
-            elif extracted_filename == 'Mash':
+            elif extracted_filename == 'marshandparsons':
                 # Add endpoint for Mash and Parson
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
@@ -156,6 +156,34 @@ class FileUploadController(MethodResource, Resource):
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
                     endpoint_name="squires_estates_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'winkworth':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="winkworth_repairs",
+                    version="1"
+                )
+            elif extracted_filename == 'Streets Ahead':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="streets_ahead_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'metro-village':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="metro_village_repair",
+                    version="1"
+                )
+            elif extracted_filename == 'metro-village':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="base_property_repair",
                     version="1"
                 )
             elif extracted_filename == 'APW':
@@ -224,8 +252,8 @@ class FileUploadController(MethodResource, Resource):
 
 KEYWORDS = [
     "Benham", "CBRE", "Chestertons", "Cluttons", "Countrywide",
-    "GCP", "Haart", "Hamptons", "KFH", "Mash", "MyLako",
-    "Savills", "Squires", "APW"
+    "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village",
 ]
 def extract_filename_from_pdf(file_path):
     with pdfplumber.open(file_path) as pdf:
