@@ -1,5 +1,5 @@
 try:
-    from flask import Flask
+    from flask import Flask, request, jsonify, send_from_directory
     from flask_restful import Api
     from apispec import APISpec
     from marshmallow import Schema, fields
@@ -7,7 +7,7 @@ try:
     from flask_apispec.extension import FlaskApiSpec
     from flask_apispec import marshal_with, doc, use_kwargs
     from dotenv import load_dotenv
-
+    from flask_cors import CORS
     # Import your controllers
     from API.ClusterHealth.HealthCheckController import HeathController
     from API.FileUpload.FileUploadController import FileUploadController
@@ -20,6 +20,7 @@ load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 # Configure API specifications
@@ -47,6 +48,19 @@ try:
 
 except Exception as e:
     print("Modules are Missing: {}".format(e))
+
+
+# Serve the static HTML file
+@app.route('/')
+def home():
+    return send_from_directory(app.static_folder, 'index.html')
+
+
+# Serve static files (CSS and JS)
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(app.static_folder, filename)
+
 
 # Run the Flask app in debug mode
 if __name__ == '__main__':
