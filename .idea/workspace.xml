@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="intial commit">
-      <change afterPath="$PROJECT_DIR$/app/static/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/static/script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/static/style.css" afterDir="false" />
+    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="File deop added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,7 +154,7 @@
       <option name="presentableId" value="Default" />
       <updated>1727847158566</updated>
       <workItem from="1727847178358" duration="8407000" />
-      <workItem from="1728376376128" duration="2611000" />
+      <workItem from="1728376376128" duration="5886000" />
     </task>
     <task id="LOCAL-00001" summary="intial commit">
       <option name="closed" value="true" />
@@ -175,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727855766434</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="File deop added">
+      <option name="closed" value="true" />
+      <created>1728379414536</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1728379414536</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,7 +191,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="intial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="intial commit" />
+    <MESSAGE value="File deop added" />
+    <option name="LAST_COMMIT_MESSAGE" value="File deop added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -200,12 +206,6 @@
           <url>file://$PROJECT_DIR$/app/API/FileUpload/FileUploadController.py</url>
           <line>46</line>
           <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/app/static/script.js</url>
-          <line>9</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
