@@ -12,7 +12,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (event) =
     uploadButton.innerText = 'Uploading...';
 
     try {
-        const response = await fetch('http://localhost:8001/upload', {
+        const response = await fetch('http://194.164.89.79:8001/upload', {
             method: 'POST',
             body: formData,
         });

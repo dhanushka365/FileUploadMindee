@@ -15,6 +15,7 @@ try:
     from mindee import Client, AsyncPredictResponse, product
     import json
     import pdfplumber
+    import requests
     print("All imports are ok............")
 except Exception as e:
     print("Error: {} ".format(e))
@@ -237,6 +238,14 @@ class FileUploadController(MethodResource, Resource):
 
             if os.path.exists(file_path):
                 os.remove(file_path)  # Remove the file to save server storage
+
+            webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
+            try:
+                response = requests.post(webhook_url, json=cleaned_data)
+                response.raise_for_status()  # Check if the request was successful
+                print(f"Webhook sent successfully: {response.status_code}")
+            except requests.RequestException as e:
+                print(f"Failed to send webhook: {e}")
 
             return {
                 'message': 'File uploaded and processed successfully',
