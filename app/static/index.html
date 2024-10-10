@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work Order Upload</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to the CSS file -->
-</head>
-<body>
-    <div class="upload-container">
-        <h1>Upload Your WorkOrder Here</h1>
-        <form id="uploadForm">
-            <input type="file" id="fileInput" required />
-            <button type="submit" id="uploadButton">Upload</button>
-        </form>
-        <div id="message" class="message"></div> <!-- For displaying messages -->
+    <title>Work Order Uploader</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Linking Box Icon for Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="file-uploader">
+      <div class="uploader-header">
+        <h2 class="uploader-title">Upload You Work Order</h2>
+        <h4 class="file-completed-status"></h4>
+      </div>
+      <ul class="file-list"></ul>
+      <div class="file-upload-box">
+        <h2 class="box-title">
+          <span class="file-instruction">Drag files here or</span>
+          <span class="file-browse-button">browse</span>
+        </h2>
+        <input class="file-browse-input" type="file" multiple hidden>
+      </div>
+      <!-- Submit button for files -->
+      <button class="file-submit-button">Submit Files</button>
     </div>
 
-    <script src="script.js"></script> <!-- Link to the JavaScript file -->
-</body>
+    <!-- Notification for upload success/error -->
+    <div class="notification" id="notification" style="display: none;">
+      <span class="notification-message"></span>
+      <button class="notification-close">&times;</button>
+    </div>
+  </body>
 </html>
