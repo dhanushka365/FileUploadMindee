@@ -7,13 +7,12 @@ const fileSubmitButton = document.querySelector(".file-submit-button");
 const notification = document.getElementById('notification');
 const notificationMessage = document.querySelector('.notification-message');
 const notificationClose = document.querySelector('.notification-close');
-const messageDiv = document.getElementById('message'); // Add a div to echo the response
+const messageDiv = document.getElementById('message');
 
 let totalFiles = 0;
 let completedFiles = 0;
 let selectedFiles = [];
 
-// Function to create HTML for each file item
 const createFileItemHTML = (file, index) => {
     const { name, size } = file;
     const extension = name.split(".").pop();
@@ -39,7 +38,6 @@ const createFileItemHTML = (file, index) => {
             </li>`;
 };
 
-// Function to handle removing files
 const removeFile = (index) => {
     // Remove the file from the selectedFiles array
     selectedFiles.splice(index, 1);
@@ -60,7 +58,6 @@ const removeFile = (index) => {
         fileCompletedStatus.innerText = `${completedFiles} / ${totalFiles} files ready for submission`;
     }
 
-    // Reassign new data-index to cancel buttons for consistency
     document.querySelectorAll(".file-item").forEach((item, newIndex) => {
         item.id = `file-item-${newIndex}`;
         item.querySelector(".cancel-button").setAttribute('data-index', newIndex);
@@ -68,7 +65,6 @@ const removeFile = (index) => {
     });
 };
 
-// Function to handle selected files
 const handleSelectedFiles = ([...files]) => {
     if (files.length === 0) return;
 
@@ -87,8 +83,6 @@ const handleSelectedFiles = ([...files]) => {
     fileCompletedStatus.innerText = `${completedFiles} / ${totalFiles} files ready for submission`;
 };
 
-
-// Function to show notification
 const showNotification = (message, type) => {
     notificationMessage.innerText = message;
     notification.classList.add(type); // 'success' or 'error'
@@ -101,26 +95,22 @@ const showNotification = (message, type) => {
     }, 5000);
 };
 
-// Close notification button event listener
 notificationClose.addEventListener('click', () => {
     notification.style.display = 'none';
 });
 
-// Function to handle file uploading and echo the Mindee API response
 const handleFileUploading = () => {
-    // Check if there are no selected files
     if (selectedFiles.length === 0) {
         showNotification('Error: No files selected for upload. Please select a file.', 'error');
-        return; // Exit the function if no files are selected
+        return;
     }
 
     selectedFiles.forEach((file, index) => {
-        const uniqueIdentifier = Date.now() + index;
         const xhr = new XMLHttpRequest();
         const formData = new FormData();
         formData.append("file", file);
 
-        const currentFileItem = document.querySelector(`#file-item-${uniqueIdentifier}`);
+        const currentFileItem = document.querySelector(`#file-item-${index}`);
 
         xhr.upload.addEventListener("progress", (e) => {
             const fileProgress = Math.round((e.loaded / e.total) * 100);
@@ -136,14 +126,11 @@ const handleFileUploading = () => {
             const response = JSON.parse(xhr.responseText);
 
             // Check if the upload was successful
-            if (xhr.status === 200) {
-                showNotification(`Success: ${response.message}`, 'success');
-
-                // Echo Mindee API response in messageDiv
-                messageDiv.innerText = 'Mindee API Response:\n' + JSON.stringify(response, null, 2);
+            if (xhr.status === 201) {
+                  showNotification(`Success: ${response.message}`, 'success');
+                  //showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
             } else {
                 showNotification(`Error: ${response.message}`, 'error');
-                messageDiv.innerText = 'Error: ' + (response.message || 'Upload failed.');
             }
         });
 
@@ -152,7 +139,7 @@ const handleFileUploading = () => {
             showNotification(`Failed to upload ${file.name}. Please try again.`, 'error');
         });
 
-        xhr.open("POST", "/upload", true); // Replace with your actual Mindee API URL
+        xhr.open("POST", "/upload", true);
         xhr.send(formData);
     });
 };
@@ -179,4 +166,3 @@ fileBrowseButton.addEventListener("click", () => fileBrowseInput.click());
 
 // Submit button event listener
 fileSubmitButton.addEventListener("click", () => handleFileUploading());
-
