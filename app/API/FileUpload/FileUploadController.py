@@ -72,7 +72,7 @@ class FileUploadController(MethodResource, Resource):
                 # Add endpoint for Benham&Reeves
                 my_endpoint = mindee_client.create_endpoint(
                     account_name="SmarterDev",
-                    endpoint_name="benhamreeves_repair",
+                    endpoint_name="benham_repair",
                     version="1"
                 )
             elif extracted_filename == 'CBRE':
