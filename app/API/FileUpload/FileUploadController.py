@@ -232,6 +232,9 @@ class FileUploadController(MethodResource, Resource):
 
             cleaned_data = {key: extract_field_value(value) for key, value in mindee_data.items()}
 
+            # Add file_path to the cleaned data
+            cleaned_data['file_path'] = file_path
+
             mindee_data_string = json.dumps(cleaned_data, indent=4)
 
             print(type(mindee_data_string))
