@@ -65,7 +65,7 @@ class FileUploadController(MethodResource, Resource):
 
 
             # Init a new client
-            mindee_client = Client(api_key="e0611a74d21d266a82f538946afccd3d")
+            mindee_client = Client(api_key="eed1f2976fcd28860b0e1af3f1d81c1a")
 
             # Set up logic based on the extracted filename
             if extracted_filename == 'Benham':
@@ -236,10 +236,10 @@ class FileUploadController(MethodResource, Resource):
 
             print(type(mindee_data_string))
 
-            if os.path.exists(file_path):
-                os.remove(file_path)  # Remove the file to save server storage
+            # if os.path.exists(file_path):
+            #     os.remove(file_path)  # Remove the file to save server storage
 
-            webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
+            webhook_url = "https://smarterappliances.co.uk/Clientresponse/testWorkorders"
             try:
                 response = requests.post(webhook_url, json=cleaned_data)
                 response.raise_for_status()  # Check if the request was successful
@@ -248,6 +248,7 @@ class FileUploadController(MethodResource, Resource):
                 print(f"Failed to send webhook: {e}")
 
             return {
+                'file_path': file_path,
                 'message': 'File uploaded and processed successfully',
                 'result': json.loads(mindee_data_string)
             }, 201
