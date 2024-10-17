@@ -8,9 +8,9 @@ from flask_restful import Resource
 from marshmallow import Schema, fields
 from mindee import Client, product
 from werkzeug.utils import secure_filename
-
+from flask import request
 # Define the base directory where files will be uploaded
-BASE_DIRECTORY = os.path.join(os.getcwd(), "temporary")
+BASE_DIRECTORY = os.path.join(os.getcwd(), "app/static/temporary")
 
 # Ensure the base directory exists
 if not os.path.exists(BASE_DIRECTORY):
@@ -182,7 +182,15 @@ class FileUploadController(MethodResource, Resource):
 
             # Step 7: Move and rename the file to the company-specific folder
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, payment_po_number)
-            cleaned_data['file_path'] = final_file_path
+            # Construct the full file URL
+            # Inside FileUploadController's post method
+            host_url = request.host_url  # This will include protocol (http:// or https://) and the domain/port
+
+            # Construct the full file URL
+            host_url = request.host_url  # This will include protocol (http:// or https://) and the domain/port
+            full_file_url = host_url + "static/temporary/" + company_name + "/" + os.path.basename(final_file_path)
+
+            cleaned_data['file_path'] = full_file_url
 
             # Step 8: Send webhook with result data
             webhook_url = "https://smarterappliances.co.uk/Clientresponse/testWorkorders"
@@ -193,7 +201,7 @@ class FileUploadController(MethodResource, Resource):
                 print(f"Failed to send webhook: {e}")
 
             return {
-                'file_path': final_file_path,
+                'file_path': full_file_url,
                 'message': 'File uploaded and processed successfully',
                 'result': cleaned_data
             }, 201

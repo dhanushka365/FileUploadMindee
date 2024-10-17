@@ -127,8 +127,8 @@ const handleFileUploading = () => {
 
             // Check if the upload was successful
             if (xhr.status === 201) {
-                  showNotification(`Success: ${response.message}`, 'success');
-                  //showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
+                  //showNotification(`Success: ${response.message}`, 'success');
+                  showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
             } else {
                 showNotification(`Error: ${response.message}`, 'error');
             }
