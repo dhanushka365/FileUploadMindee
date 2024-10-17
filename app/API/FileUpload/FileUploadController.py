@@ -1,24 +1,13 @@
+import os
 
-
-try:
-    import os
-    import tempfile
-    from flask import Flask, jsonify
-    from flask_restful import Resource, Api
-    from apispec import APISpec
-    from marshmallow import Schema, fields
-    from apispec.ext.marshmallow import MarshmallowPlugin
-    from flask_apispec.extension import FlaskApiSpec
-    from flask_apispec.views import MethodResource
-    from flask_apispec import marshal_with, doc, use_kwargs
-    from werkzeug.utils import secure_filename
-    from mindee import Client, AsyncPredictResponse, product
-    import json
-    import pdfplumber
-    import requests
-    print("All imports are ok............")
-except Exception as e:
-    print("Error: {} ".format(e))
+import pdfplumber
+import requests
+from flask_apispec import doc, use_kwargs
+from flask_apispec.views import MethodResource
+from flask_restful import Resource
+from marshmallow import Schema, fields
+from mindee import Client, product
+from werkzeug.utils import secure_filename
 
 # Define the upload directory
 UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "uploads")
@@ -31,6 +20,68 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 class FileUploadSchema(Schema):
     file = fields.Raw(required=True, description="File to upload", type="file")
 
+def extract_info_from_pdf(file_path):
+    """
+    Extracts the company name from the PDF.
+    """
+    with pdfplumber.open(file_path) as pdf:
+        first_page = pdf.pages[0]
+        text = first_page.extract_text()
+
+        # Find the company name
+        for keyword in KEYWORDS:
+            if keyword.lower() in text.lower():
+                return secure_filename(keyword)
+
+        return "not found"
+
+
+def get_versioned_filename(directory, filename):
+    """
+    Checks if a file with the same name exists in the directory.
+    If it does, append a version number to the filename.
+    """
+    base, ext = os.path.splitext(filename)
+    version = 1
+    new_filename = filename
+
+    while os.path.exists(os.path.join(directory, new_filename)):
+        new_filename = f"{base}_v{version}{ext}"
+        version += 1
+
+    return new_filename
+
+
+def save_file(file, company_name):
+    """
+    Saves the uploaded file in the company's folder with a temporary name.
+    """
+    # Create the directory for the company
+    company_folder = os.path.join(UPLOAD_DIRECTORY, company_name)
+    if not os.path.exists(company_folder):
+        os.makedirs(company_folder)
+
+    # Save the file temporarily using the original filename
+    temp_filename = secure_filename(file.filename)
+    file_path = os.path.join(company_folder, temp_filename)
+    file.save(file_path)
+
+    return file_path
+
+
+def rename_file(old_file_path, new_filename, company_name):
+    """
+    Renames the file based on the new filename (payment PO number) and appends a version if needed.
+    """
+    company_folder = os.path.dirname(old_file_path)
+    new_filename = secure_filename(f"{company_name}_{new_filename}.pdf")
+    new_filename = get_versioned_filename(company_folder, new_filename)
+
+    new_file_path = os.path.join(company_folder, new_filename)
+    os.rename(old_file_path, new_file_path)
+
+    return new_file_path
+
 
 # Controller for File Upload
 class FileUploadController(MethodResource, Resource):
@@ -40,10 +91,11 @@ class FileUploadController(MethodResource, Resource):
         """
         Post method for file uploads. Saves the file and returns the file path.
         """
+        temp_file_path = None
+
         if not file:
             return {'message': 'No file part'}, 400
 
-        file_name = file.filename
         if file.filename == '':
             return {'message': 'No selected file'}, 400
 
@@ -52,266 +104,103 @@ class FileUploadController(MethodResource, Resource):
         if not filename.lower().endswith('.pdf'):
             return {'message': 'Only PDF files are allowed.'}, 400
 
-        file_path = os.path.join(UPLOAD_DIRECTORY, file_name)
-
         try:
-            # Save the file to the upload directory
-            file.save(file_path)
-            print(f"File saved to: {file_path}")
+            # Step 1: Save the file temporarily with the original filename
+            temp_file_path = save_file(file, 'temporary')
 
-            # Use the utility function to extract the filename
-            extracted_filename = extract_filename_from_pdf(file_path)
-            print(f"Extracted filename: {extracted_filename}")
+            # Step 2: Extract the company name from the PDF
+            company_name = extract_info_from_pdf(temp_file_path)
+            if company_name == "not found":
+                return {'message': 'No valid company found in the PDF'}, 400
 
-
-            # Init a new client
+            # Step 3: Initialize Mindee Client
             mindee_client = Client(api_key="eed1f2976fcd28860b0e1af3f1d81c1a")
 
-            # Set up logic based on the extracted filename
-            if extracted_filename == 'Benham':
-                # Add endpoint for Benham&Reeves
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="benham_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'CBRE':
-                # Add endpoint for CBRE
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="cbre_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'Chestertons':
-                # Add endpoint for Chestertons
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="chestertons_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'Cluttons':
-                # Add endpoint for Cluttons
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="cluttons_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'Countrywide':
-                # Add endpoint for Countrywide
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="countrywide_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'GCP':
-                # Add endpoint for GCP
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="gcp_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'Haart':
-                # Add endpoint for Haart
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="haart_replacement",
-                    version="1"
-                )
-            elif extracted_filename == 'Hamptons':
-                # Add endpoint for Hamptons
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="hamptons_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'KFH':
-                # Add endpoint for KFH
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="kfh_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'marshandparsons':
-                # Add endpoint for Mash and Parson
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="mash_and_parson_replacement",
-                    version="1"
-                )
-            elif extracted_filename == 'MyLako':
-                # Add endpoint for MyLako
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="mylako_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'Savills':
-                # Add endpoint for Savills Picture House
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="savills_picture_house_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'Squires':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="squires_estates_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'alandemaid':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="alan_de_maid",
-                    version="1"
-                )
-            elif extracted_filename == 'bairstoweves':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="bairstow_eves",
-                    version="1"
-                )
-            elif extracted_filename == 'gpees':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="gascoigne_pees",
-                    version="1"
-                )
-            elif extracted_filename == 'manndartford':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="mann",
-                    version="1"
-                )
-            elif extracted_filename == 'LCP':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="lcp",
-                    version="1"
-                )
-            elif extracted_filename == 'winkworth':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="winkworth_repairs",
-                    version="1"
-                )
-            elif extracted_filename == 'Streets Ahead':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="streets_ahead_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'metro-village':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="metro_village_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'metro-village':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="base_property_repair",
-                    version="1"
-                )
-            elif extracted_filename == 'APW':
-                # Add endpoint for Squires Estates
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="apw_repair",
-                    version="1"
-                )
-            else:
-                # Fallback if no specific match is found
-                my_endpoint = mindee_client.create_endpoint(
-                    account_name="SmarterDev",
-                    endpoint_name="commonworkorder_new",
-                    version="1"
-                )
+            # Step 4: Set up the Mindee endpoint for the extracted company
+            endpoints = {
+                "Benham": "benham_repair",
+                "CBRE": "cbre_repair",
+                "Chestertons": "chestertons_repair",
+                "Cluttons": "cluttons_repair",
+                "Countrywide": "countrywide_repair",
+                "GCP": "gcp_repair",
+                "Haart": "haart_replacement",
+                "Hamptons": "hamptons_repair",
+                "KFH": "kfh_repair",
+                "marshandparsons": "mash_and_parson_replacement",
+                "MyLako": "mylako_repair",
+                "Savills": "savills_picture_house_repair",
+                "Squires": "squires_estates_repair",
+                "alandemaid": "alan_de_maid",
+                "bairstoweves": "bairstow_eves",
+                "gpees": "gascoigne_pees",
+                "manndartford": "mann",
+                "LCP": "lcp",
+                "winkworth": "winkworth_repairs",
+                "Streets Ahead": "streets_ahead_repair",
+                "metro-village": "metro_village_repair",
+                "APW": "apw_repair",
+            }
 
-            input_doc = mindee_client.source_from_path(file_path)
-
-            result: AsyncPredictResponse = mindee_client.enqueue_and_parse(
-                product.GeneratedV1,
-                input_doc,
-                endpoint=my_endpoint
+            # Default fallback endpoint
+            default_endpoint = "commonworkorder_new"
+            my_endpoint = mindee_client.create_endpoint(
+                account_name="SmarterDev",
+                endpoint_name=endpoints.get(company_name, default_endpoint),
+                version="1"
             )
 
-            # Assuming you have your result from Mindee
+            # Step 5: Upload and process the PDF with Mindee
+            input_doc = mindee_client.source_from_path(temp_file_path)
+            result = mindee_client.enqueue_and_parse(product.GeneratedV1, input_doc, endpoint=my_endpoint)
+
+            # Step 6: Extract and clean data from Mindee result
             mindee_data = result.document.inference.prediction.fields
 
             def extract_field_value(field):
                 field_type = type(field)
                 if "StringField" in str(field_type):
-                    return field.value  # Directly return the string value
+                    return field.value
                 elif "GeneratedListField" in str(field_type):
-                    return [extract_field_value(item) for item in field.values]  # Handle list fields
+                    return [extract_field_value(item) for item in field.values]
                 elif "GeneratedObjectField" in str(field_type):
-                    # Remove unwanted fields from the object
                     return {
                         key: extract_field_value(getattr(field, key)) for key in dir(field)
-                        if
-                        not key.startswith('__') and key not in ['page_id', '_GeneratedObjectField__printable_values',
-                                                                 '_str_level']
+                        if not key.startswith('__') and key not in ['page_id', '_GeneratedObjectField__printable_values', '_str_level']
                     }
                 else:
                     return str(field)
 
             cleaned_data = {key: extract_field_value(value) for key, value in mindee_data.items()}
+            payment_po_number = cleaned_data.get("paymentponumber", "UnknownPO")
 
-            # Add file_path to the cleaned data
-            cleaned_data['file_path'] = file_path
+            # Step 7: Rename the file using PO number and company name
+            final_file_path = rename_file(temp_file_path, payment_po_number, company_name)
+            cleaned_data['file_path'] = final_file_path
 
-            mindee_data_string = json.dumps(cleaned_data, indent=4)
-
-            print(type(mindee_data_string))
-
-            # if os.path.exists(file_path):
-            #     os.remove(file_path)  # Remove the file to save server storage
-
+            # Step 8: Send webhook with result data
             webhook_url = "https://smarterappliances.co.uk/Clientresponse/testWorkorders"
             try:
                 response = requests.post(webhook_url, json=cleaned_data)
-                response.raise_for_status()  # Check if the request was successful
-                print(f"Webhook sent successfully: {response.status_code}")
+                response.raise_for_status()
             except requests.RequestException as e:
                 print(f"Failed to send webhook: {e}")
 
             return {
-                'file_path': file_path,
+                'file_path': final_file_path,
                 'message': 'File uploaded and processed successfully',
-                'result': json.loads(mindee_data_string)
+                'result': cleaned_data
             }, 201
 
         except Exception as e:
-            if os.path.exists(file_path):
-                os.remove(file_path)  # Remove the file if processing fails
+            if temp_file_path and os.path.exists(temp_file_path):
+                os.remove(temp_file_path)
             return {'message': 'Failed to process file with Mindee', 'error': str(e)}, 500
-
 
 
 KEYWORDS = [
     "Benham", "CBRE", "Chestertons", "Cluttons", "Countrywide",
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
-    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves" ,"gpees" , "manndartford" ,"LCP",
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "manndartford", "LCP",
 ]
-def extract_filename_from_pdf(file_path):
-    with pdfplumber.open(file_path) as pdf:
-        first_page = pdf.pages[0]
-        text = first_page.extract_text()
 
-        for keyword in KEYWORDS:
-            if keyword.lower() in text.lower():
-                print(f"Keyword found: {keyword}")
-                return secure_filename(keyword)
-
-        print("No keyword found.")
-        return "not found"
