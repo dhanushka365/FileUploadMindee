@@ -10,7 +10,7 @@ from mindee import Client, product
 from werkzeug.utils import secure_filename
 from flask import request
 # Define the base directory where files will be uploaded
-BASE_DIRECTORY = os.path.join(os.getcwd(), "app/static/temporary")
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
 
 # Ensure the base directory exists
 if not os.path.exists(BASE_DIRECTORY):
