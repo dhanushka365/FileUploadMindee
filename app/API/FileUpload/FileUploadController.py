@@ -173,6 +173,27 @@ class FileUploadController(MethodResource, Resource):
                     endpoint_name="bairstow_eves",
                     version="1"
                 )
+            elif extracted_filename == 'gpees':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="gascoigne_pees",
+                    version="1"
+                )
+            elif extracted_filename == 'manndartford':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="mann",
+                    version="1"
+                )
+            elif extracted_filename == 'LCP':
+                # Add endpoint for Squires Estates
+                my_endpoint = mindee_client.create_endpoint(
+                    account_name="SmarterDev",
+                    endpoint_name="lcp",
+                    version="1"
+                )
             elif extracted_filename == 'winkworth':
                 # Add endpoint for Squires Estates
                 my_endpoint = mindee_client.create_endpoint(
@@ -280,7 +301,7 @@ class FileUploadController(MethodResource, Resource):
 KEYWORDS = [
     "Benham", "CBRE", "Chestertons", "Cluttons", "Countrywide",
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
-    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves",
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves" ,"gpees" , "manndartford" ,"LCP",
 ]
 def extract_filename_from_pdf(file_path):
     with pdfplumber.open(file_path) as pdf:
