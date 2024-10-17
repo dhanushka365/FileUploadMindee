@@ -9,12 +9,12 @@ from marshmallow import Schema, fields
 from mindee import Client, product
 from werkzeug.utils import secure_filename
 
-# Define the upload directory
-UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "uploads")
+# Define the base directory where files will be uploaded
+BASE_DIRECTORY = os.path.join(os.getcwd(), "temporary")
 
-# Ensure the upload directory exists
-if not os.path.exists(UPLOAD_DIRECTORY):
-    os.makedirs(UPLOAD_DIRECTORY)
+# Ensure the base directory exists
+if not os.path.exists(BASE_DIRECTORY):
+    os.makedirs(BASE_DIRECTORY)
 
 # Schema for file upload request
 class FileUploadSchema(Schema):
@@ -52,33 +52,39 @@ def get_versioned_filename(directory, filename):
     return new_filename
 
 
-def save_file(file, company_name):
+def save_file(file):
     """
-    Saves the uploaded file in the company's folder with a temporary name.
+    Saves the uploaded file in a general 'incoming' folder temporarily.
     """
-    # Create the directory for the company
-    company_folder = os.path.join(UPLOAD_DIRECTORY, company_name)
-    if not os.path.exists(company_folder):
-        os.makedirs(company_folder)
+    # Create the directory for 'incoming' folder inside the 'temporary' directory
+    incoming_folder = os.path.join(BASE_DIRECTORY, 'incoming')
+    if not os.path.exists(incoming_folder):
+        os.makedirs(incoming_folder)
 
     # Save the file temporarily using the original filename
     temp_filename = secure_filename(file.filename)
-    file_path = os.path.join(company_folder, temp_filename)
+    file_path = os.path.join(incoming_folder, temp_filename)
     file.save(file_path)
 
     return file_path
 
 
-def rename_file(old_file_path, new_filename, company_name):
+def move_file_to_company_folder(temp_file_path, company_name, new_filename):
     """
-    Renames the file based on the new filename (payment PO number) and appends a version if needed.
+    Moves and renames the file to the correct company folder with a new filename.
     """
-    company_folder = os.path.dirname(old_file_path)
+    # Create the directory for the company inside the 'temporary' directory
+    company_folder = os.path.join(BASE_DIRECTORY, company_name)
+    if not os.path.exists(company_folder):
+        os.makedirs(company_folder)
+
+    # Generate a secure and versioned filename
     new_filename = secure_filename(f"{company_name}_{new_filename}.pdf")
     new_filename = get_versioned_filename(company_folder, new_filename)
 
+    # Move the file to the company folder
     new_file_path = os.path.join(company_folder, new_filename)
-    os.rename(old_file_path, new_file_path)
+    os.rename(temp_file_path, new_file_path)
 
     return new_file_path
 
@@ -105,8 +111,8 @@ class FileUploadController(MethodResource, Resource):
             return {'message': 'Only PDF files are allowed.'}, 400
 
         try:
-            # Step 1: Save the file temporarily with the original filename
-            temp_file_path = save_file(file, 'temporary')
+            # Step 1: Save the file temporarily in the 'incoming' folder
+            temp_file_path = save_file(file)
 
             # Step 2: Extract the company name from the PDF
             company_name = extract_info_from_pdf(temp_file_path)
@@ -174,8 +180,8 @@ class FileUploadController(MethodResource, Resource):
             cleaned_data = {key: extract_field_value(value) for key, value in mindee_data.items()}
             payment_po_number = cleaned_data.get("paymentponumber", "UnknownPO")
 
-            # Step 7: Rename the file using PO number and company name
-            final_file_path = rename_file(temp_file_path, payment_po_number, company_name)
+            # Step 7: Move and rename the file to the company-specific folder
+            final_file_path = move_file_to_company_folder(temp_file_path, company_name, payment_po_number)
             cleaned_data['file_path'] = final_file_path
 
             # Step 8: Send webhook with result data
@@ -203,4 +209,3 @@ KEYWORDS = [
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
     "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "manndartford", "LCP",
 ]
-
