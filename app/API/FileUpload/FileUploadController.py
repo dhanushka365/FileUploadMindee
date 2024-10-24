@@ -125,7 +125,7 @@ class FileUploadController(MethodResource, Resource):
 
             # Step 4: Set up the Mindee endpoint for the extracted company
             endpoints = {
-                "Countrywide": "mann",
+                "Mann": "mann",
                 "Benham": "benham_repair",
                 "CBRE": "cbre_repair",
                 "Chestertons": "chestertons_repair",
@@ -213,7 +213,7 @@ class FileUploadController(MethodResource, Resource):
 
 
 KEYWORDS = [
-    "Benham", "CBRE", "Chestertons", "Cluttons", "Countrywide",
+    "Benham", "CBRE", "Chestertons", "Cluttons",
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
-    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "manndartford", "LCP",
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "Mann", "LCP",
 ]
