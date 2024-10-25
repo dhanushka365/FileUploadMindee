@@ -146,7 +146,8 @@ class FileUploadController(MethodResource, Resource):
                 "Streets Ahead": "streets_ahead_repair",
                 "metro-village": "metro_village_repair",
                 "APW": "apw_repair",
-                "Foxtons":"foxtons"
+                "Foxtons":"foxtons",
+                "Cole": "madison_brook_repair",
             }
 
             # Default fallback endpoint
@@ -216,5 +217,5 @@ class FileUploadController(MethodResource, Resource):
 KEYWORDS = [
     "Benham", "CBRE", "Chestertons", "Cluttons",
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
-    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "Mann", "LCP", "Foxtons"
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "Mann", "LCP", "Foxtons" ,"Cole"
 ]

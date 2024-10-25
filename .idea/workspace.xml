@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="Mann issue fixed">
+    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="Foxtons Mindee API created">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/API/FileUpload/FileUploadController.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/API/FileUpload/FileUploadController.py" afterDir="false" />
     </list>
@@ -306,7 +306,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729740929529</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Foxtons Mindee API created">
+      <option name="closed" value="true" />
+      <created>1729838274235</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1729838274235</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -341,7 +349,8 @@
     <MESSAGE value="code changes committed" />
     <MESSAGE value="harrt issue fixed" />
     <MESSAGE value="Mann issue fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Mann issue fixed" />
+    <MESSAGE value="Foxtons Mindee API created" />
+    <option name="LAST_COMMIT_MESSAGE" value="Foxtons Mindee API created" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -350,6 +359,11 @@
           <url>file://$PROJECT_DIR$/app/API/ClusterHealth/HealthCheckController.py</url>
           <line>18</line>
           <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/API/FileUpload/FileUploadController.py</url>
+          <line>32</line>
+          <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/app/static/script.js</url>
@@ -368,7 +382,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FileuploadMindee$FileuploadMindee.coverage" NAME="FileuploadMindee Coverage Results" MODIFIED="1727847206611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/FileuploadMindee$Flask__app_app_py_.coverage" NAME="Flask (app/app.py) Coverage Results" MODIFIED="1729838077452" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FileuploadMindee$Flask__app_app_py_.coverage" NAME="Flask (app/app.py) Coverage Results" MODIFIED="1729850574803" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FileuploadMindee$Flask__main_py_.coverage" NAME="Flask (main.py) Coverage Results" MODIFIED="1727848355283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/FileuploadMindee$app.coverage" NAME="app Coverage Results" MODIFIED="1727848851246" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
   </component>
