@@ -217,9 +217,7 @@ class FileUploadController(MethodResource, Resource):
                 print(f"Failed to send webhook: {e}")
 
             return {
-                'file_path': full_file_url,
-                'message': 'File uploaded and processed successfully',
-                'result': response.json()
+                  'result': json_content
             }, 201
 
         except Exception as e:
