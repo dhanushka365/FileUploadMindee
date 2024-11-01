@@ -147,8 +147,9 @@ class FileUploadController(MethodResource, Resource):
                 "Streets Ahead": "streets_ahead_repair",
                 "metro-village": "metro_village_repair",
                 "APW": "apw_repair",
-                "Foxtons":"foxtons",
+                "Foxtons": "foxtons",
                 "Cole": "madison_brook_repair",
+                "Chase Buchanan’s": "chasse_buchanan"
             }
 
             # Default fallback endpoint
@@ -196,7 +197,7 @@ class FileUploadController(MethodResource, Resource):
             cleaned_data['file_path'] = full_file_url
 
             # Step 8: Send webhook with result data
-            webhook_url = "https://smarterappliances.co.uk/Clientresponse/testWorkorders"
+            webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
             try:
                 response = requests.post(webhook_url, json=cleaned_data)
                 json_content = response.json()
@@ -230,5 +231,7 @@ class FileUploadController(MethodResource, Resource):
 KEYWORDS = [
     "Benham", "CBRE", "Chestertons", "Cluttons",
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
-    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village", "alandemaid", "bairstoweves", "gpees", "Mann", "LCP", "Foxtons" ,"Cole"
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village",
+    "alandemaid", "bairstoweves", "gpees", "Mann",
+    "LCP", "Foxtons", "Cole", "Chase Buchanan’s"
 ]
