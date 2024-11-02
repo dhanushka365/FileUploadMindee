@@ -149,7 +149,8 @@ class FileUploadController(MethodResource, Resource):
                 "APW": "apw_repair",
                 "Foxtons": "foxtons",
                 "Cole": "madison_brook_repair",
-                "Chase Buchanan’s": "chasse_buchanan"
+                "Chase Buchanan’s": "chasse_buchanan",
+                "Featherstone ": "featherstoneleigh"
             }
 
             # Default fallback endpoint
@@ -233,5 +234,5 @@ KEYWORDS = [
     "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
     "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village",
     "alandemaid", "bairstoweves", "gpees", "Mann",
-    "LCP", "Foxtons", "Cole", "Chase Buchanan’s"
+    "LCP", "Foxtons", "Cole", "Chase Buchanan’s", "Featherstone"
 ]
