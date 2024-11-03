@@ -9,6 +9,6 @@ COPY ./app /app
 RUN pip3 install --no-cache-dir -r requirements.txt
 RUN apt-get install openssl
 
-EXPOSE 8001
+EXPOSE 8002
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8001", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8002", "app:app"]
