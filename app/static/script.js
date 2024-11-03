@@ -9,9 +9,58 @@ const notificationMessage = document.querySelector('.notification-message');
 const notificationClose = document.querySelector('.notification-close');
 const messageDiv = document.getElementById('message');
 
+const resultSection = document.getElementById('resultSection');
+const pdfPreview = document.getElementById('pdfPreview');
+const pdfFrame = document.getElementById('pdfFrame');
+const dataFields = document.getElementById('dataFields');
+const submitDataButton = document.getElementById('dataForm').querySelector('button');
+
 let totalFiles = 0;
 let completedFiles = 0;
 let selectedFiles = [];
+
+
+// Function to create labeled, editable text boxes based on JSON response
+const populateDataFields = (jsonResponse) => {
+    dataFields.innerHTML = ""; // Clear existing fields
+
+    // Iterate over JSON data and create input fields
+    const createField = (key, value) => {
+        const fieldWrapper = document.createElement('div');
+        fieldWrapper.classList.add('field-wrapper');
+
+        const label = document.createElement('label');
+        label.innerText = key;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = value || ""; // Set to empty string if null
+        input.name = key;
+        input.classList.add('editable-field');
+
+        fieldWrapper.appendChild(label);
+        fieldWrapper.appendChild(input);
+        dataFields.appendChild(fieldWrapper);
+    };
+
+    // Recursive function to handle nested JSON objects
+    const processData = (data, parentKey = '') => {
+        for (const [key, value] of Object.entries(data)) {
+            const fieldName = parentKey ? `${parentKey}.${key}` : key;
+
+            if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+                processData(value, fieldName); // Process nested objects recursively
+            } else {
+                createField(fieldName, Array.isArray(value) ? value.join(', ') : value);
+            }
+        }
+    };
+
+    processData(jsonResponse); // Start processing from the root object
+
+    // Show the result section with form and PDF preview
+    resultSection.classList.remove('hidden');
+};
+
 
 const createFileItemHTML = (file, index) => {
     const { name, size } = file;
@@ -99,6 +148,7 @@ notificationClose.addEventListener('click', () => {
     notification.style.display = 'none';
 });
 
+// Function to handle file upload
 const handleFileUploading = () => {
     if (selectedFiles.length === 0) {
         showNotification('Error: No files selected for upload. Please select a file.', 'error');
@@ -122,25 +172,87 @@ const handleFileUploading = () => {
             currentFileItem.querySelector(".file-status").innerText = "Completed";
             fileCompletedStatus.innerText = `${completedFiles} / ${totalFiles} files uploaded`;
 
-            // Get the response from the Mindee API
+            // Parse the response from Mindee API
             const response = JSON.parse(xhr.responseText);
 
             // Check if the upload was successful
             if (xhr.status === 201) {
-                  //showNotification(`Success: ${response.message}`, 'success');
-                  showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
+                showNotification('File uploaded successfully', 'success');
+
+                // Populate the form with JSON response data
+                populateDataFields(response.result);
+
+                // Display the PDF preview
+                const pdfPath = response.result.file_path; // PDF path from response
+                pdfFrame.src = pdfPath;
             } else {
                 showNotification(`Error: ${response.message}`, 'error');
             }
         });
 
         xhr.addEventListener("error", () => {
-            // Show error notification
             showNotification(`Failed to upload ${file.name}. Please try again.`, 'error');
         });
 
         xhr.open("POST", "/upload", true);
         xhr.send(formData);
+    });
+};
+
+// Function to convert object to a readable string format for notification
+const formatObjectForNotification = (obj) => {
+    const formattedEntries = [];
+
+    const formatData = (data, parentKey = '') => {
+        for (const [key, value] of Object.entries(data)) {
+            const fullKey = parentKey ? `${parentKey}.${key}` : key;
+            if (typeof value === 'object' && value !== null) {
+                formatData(value, fullKey);
+            } else {
+                formattedEntries.push(`${fullKey}: ${value}`);
+            }
+        }
+    };
+
+    formatData(obj);
+    return formattedEntries.join('\n');
+};
+
+// Function to submit data to the webhook
+const submitData = () => {
+    const updatedData = {};
+
+    // Collect updated data from form inputs
+    dataFields.querySelectorAll('.editable-field').forEach(input => {
+        const keyPath = input.name.split('.');
+        let current = updatedData;
+
+        // Build nested structure based on dotted keys
+        keyPath.forEach((key, index) => {
+            if (index === keyPath.length - 1) {
+                current[key] = input.value; // Set final value
+            } else {
+                current[key] = current[key] || {}; // Create nested object if needed
+                current = current[key];
+            }
+        });
+    });
+    // Show notification with formatted updated data
+    showNotification(formatObjectForNotification(updatedData), 'success');
+
+    // Send updated data to the webhook
+    fetch('https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders', { // Replace '/webhook-url' with actual URL
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+    })
+    .then(response => response.json())
+    .then(result => {
+        showNotification('Data submitted successfully!', 'success');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to submit data.', 'error');
     });
 };
 
@@ -166,3 +278,4 @@ fileBrowseButton.addEventListener("click", () => fileBrowseInput.click());
 
 // Submit button event listener
 fileSubmitButton.addEventListener("click", () => handleFileUploading());
+submitDataButton.addEventListener("click", () => submitData());

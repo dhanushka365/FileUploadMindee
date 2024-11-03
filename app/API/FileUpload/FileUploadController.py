@@ -197,30 +197,31 @@ class FileUploadController(MethodResource, Resource):
 
             cleaned_data['file_path'] = full_file_url
 
-            # Step 8: Send webhook with result data
-            webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
-            try:
-                response = requests.post(webhook_url, json=cleaned_data)
-                json_content = response.json()
-                # # Save the response details to a file
-                # with open("response.txt", "w") as file:
-                #     # Save the response status code, headers, and JSON content
-                #     file.write(f"Status Code: {response.status_code}\n")
-                #     file.write(f"Header: {response.headers}\n")
-                #
-                #     # Write the JSON content, if the response is JSON-formatted
-                #     try:
-                #         json_content = response.json()
-                #         file.write(f"JSON Response: {json_content}\n")
-                #     except ValueError:
-                #         # If the response isn't valid JSON, handle it gracefully
-                #         file.write(f"Text Response: {response.text}\n")
-                response.raise_for_status()
-            except requests.RequestException as e:
-                print(f"Failed to send webhook: {e}")
+            # # Step 8: Send webhook with result data
+            # webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
+            # try:
+            #     response = requests.post(webhook_url, json=cleaned_data)
+            #     json_content = response.json()
+            #     # # Save the response details to a file
+            #     # with open("response.txt", "w") as file:
+            #     #     # Save the response status code, headers, and JSON content
+            #     #     file.write(f"Status Code: {response.status_code}\n")
+            #     #     file.write(f"Header: {response.headers}\n")
+            #     #
+            #     #     # Write the JSON content, if the response is JSON-formatted
+            #     #     try:
+            #     #         json_content = response.json()
+            #     #         file.write(f"JSON Response: {json_content}\n")
+            #     #     except ValueError:
+            #     #         # If the response isn't valid JSON, handle it gracefully
+            #     #         file.write(f"Text Response: {response.text}\n")
+            #     response.raise_for_status()
+            # except requests.RequestException as e:
+            #     print(f"Failed to send webhook: {e}")
 
             return {
-                  'result': json_content
+                  # 'result': json_content
+                    'result': cleaned_data
             }, 201
 
         except Exception as e:
