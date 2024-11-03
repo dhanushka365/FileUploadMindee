@@ -26,19 +26,19 @@
       <!-- Submit button for files -->
       <button class="file-submit-button">Submit Files</button>
     </div>
-  <!-- Result Section (Initially Hidden) -->
-  <div class="result-section hidden" id="resultSection">
-    <div class="pdf-preview" id="pdfPreview">
-      <iframe id="pdfFrame" src="" frameborder="0"></iframe>
+      <!-- Result Section (Initially Hidden) -->
+    <div class="result-section hidden" id="resultSection">
+      <div class="pdf-preview" id="pdfPreview">
+        <iframe id="pdfFrame" src="" frameborder="0"></iframe>
+      </div>
+      <div class="form-section" id="formSection">
+        <h2>Extracted Data</h2>
+        <form id="dataForm">
+          <div id="dataFields"></div>
+          <button type="button" onclick="submitData()">Submit Data</button>
+        </form>
+      </div>
     </div>
-    <div class="form-section" id="formSection">
-      <h2>Extracted Data</h2>
-      <form id="dataForm">
-        <div id="dataFields"></div>
-        <button type="button" onclick="submitData()">Submit Data</button>
-      </form>
-    </div>
-  </div>
     <!-- Notification for upload success/error -->
     <div class="notification" id="notification" style="display: none;">
       <span class="notification-message"></span>

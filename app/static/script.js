@@ -1,3 +1,4 @@
+const fileUploader = document.querySelector(".file-uploader");
 const fileList = document.querySelector(".file-list");
 const fileBrowseButton = document.querySelector(".file-browse-button");
 const fileBrowseInput = document.querySelector(".file-browse-input");
@@ -19,6 +20,10 @@ let totalFiles = 0;
 let completedFiles = 0;
 let selectedFiles = [];
 
+
+const toggleFileUploadBox = (show) => {
+     fileUploader.style.display = show ? 'block' : 'none';
+};
 
 // Function to create labeled, editable text boxes based on JSON response
 const populateDataFields = (jsonResponse) => {
@@ -59,6 +64,9 @@ const populateDataFields = (jsonResponse) => {
 
     // Show the result section with form and PDF preview
     resultSection.classList.remove('hidden');
+
+    // Hide the file upload box
+    toggleFileUploadBox(false);
 };
 
 
