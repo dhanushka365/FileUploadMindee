@@ -237,7 +237,7 @@ body {
 
 .pdf-preview iframe {
   width: 100%;
-   height: 80vh; /* Makes the iframe take up 80% of the viewport height */
+    height: 70vh; /* Makes the iframe take up 80% of the viewport height */
   border: none;
    border-radius: 8px;
 }
