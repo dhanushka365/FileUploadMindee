@@ -150,7 +150,7 @@ const showNotification = (message, type) => {
     setTimeout(() => {
         notification.style.display = 'none';
         notification.classList.remove(type);
-    }, 100000);
+    }, 5000);
 };
 
 notificationClose.addEventListener('click', () => {
