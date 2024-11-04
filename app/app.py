@@ -1,3 +1,5 @@
+
+
 try:
     from flask import Flask, request, jsonify, send_from_directory
     from flask_restful import Api
@@ -11,6 +13,7 @@ try:
     # Import your controllers
     from API.ClusterHealth.HealthCheckController import HeathController
     from API.FileUpload.FileUploadController import FileUploadController
+    from API.FileUpload.JSONWebhookController import JSONWebhookController
 
 except Exception as e:
     print("__init__ Modules are Missing: {}".format(e))
@@ -45,6 +48,9 @@ try:
 
     api.add_resource(FileUploadController, '/upload')
     docs.register(FileUploadController)
+
+    api.add_resource(JSONWebhookController,'/webhook')
+    docs.register(JSONWebhookController)
 
 except Exception as e:
     print("Modules are Missing: {}".format(e))

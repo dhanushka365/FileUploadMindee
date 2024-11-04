@@ -21,15 +21,16 @@ let completedFiles = 0;
 let selectedFiles = [];
 
 
+// Show/hide file upload box
 const toggleFileUploadBox = (show) => {
-     fileUploader.style.display = show ? 'block' : 'none';
+    fileUploader.style.display = show ? 'block' : 'none';
 };
 
 // Function to create labeled, editable text boxes based on JSON response
 const populateDataFields = (jsonResponse) => {
     dataFields.innerHTML = ""; // Clear existing fields
 
-    // Iterate over JSON data and create input fields
+    // Recursive function to create input fields for each key in the JSON
     const createField = (key, value) => {
         const fieldWrapper = document.createElement('div');
         fieldWrapper.classList.add('field-wrapper');
@@ -47,7 +48,7 @@ const populateDataFields = (jsonResponse) => {
         dataFields.appendChild(fieldWrapper);
     };
 
-    // Recursive function to handle nested JSON objects
+    // Process each key in the JSON, including nested objects
     const processData = (data, parentKey = '') => {
         for (const [key, value] of Object.entries(data)) {
             const fieldName = parentKey ? `${parentKey}.${key}` : key;
@@ -55,7 +56,7 @@ const populateDataFields = (jsonResponse) => {
             if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
                 processData(value, fieldName); // Process nested objects recursively
             } else {
-                createField(fieldName, Array.isArray(value) ? value.join(', ') : value);
+                createField(fieldName, value);
             }
         }
     };
@@ -149,7 +150,7 @@ const showNotification = (message, type) => {
     setTimeout(() => {
         notification.style.display = 'none';
         notification.classList.remove(type);
-    }, 5000);
+    }, 100000);
 };
 
 notificationClose.addEventListener('click', () => {
@@ -226,42 +227,82 @@ const formatObjectForNotification = (obj) => {
     return formattedEntries.join('\n');
 };
 
-// Function to submit data to the webhook
-const submitData = () => {
-    const updatedData = {};
+// Save JSON as text file
+const autoSaveAsTextFile = (data, filename) => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+};
 
-    // Collect updated data from form inputs
+// Update form data as JSON object for submission
+const getUpdatedFormData = () => {
+    const updatedData = {
+        "access_key": "",
+        "email": "",
+        "fault_detail": "",
+        "instruction_notes": "",
+        "paymentbillingname": "",
+        "paymentcompanyname": "",
+        "paymentponumber": "",
+        "propertymanagerdetails": {
+            "payment_buyer_name": "",
+            "paymentbuyeremail": "",
+            "paymentbyerphone": ""
+        },
+        "shippingcity": "",
+        "shippingemail": "",
+        "shippingname": "",
+        "shippingphone": "",
+        "shippingpostalcode": "",
+        "shippingstreet": "",
+        "type": "",
+        "file_path": ""
+    };
+
     dataFields.querySelectorAll('.editable-field').forEach(input => {
         const keyPath = input.name.split('.');
         let current = updatedData;
-
-        // Build nested structure based on dotted keys
         keyPath.forEach((key, index) => {
             if (index === keyPath.length - 1) {
-                current[key] = input.value; // Set final value
+                current[key] = input.value;
             } else {
-                current[key] = current[key] || {}; // Create nested object if needed
                 current = current[key];
             }
         });
     });
-    // Show notification with formatted updated data
-    showNotification(formatObjectForNotification(updatedData), 'success');
 
-    // Send updated data to the webhook
-    fetch('https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders', { // Replace '/webhook-url' with actual URL
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData)
-    })
-    .then(response => response.json())
-    .then(result => {
-        showNotification('Data submitted successfully!', 'success');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('Failed to submit data.', 'error');
-    });
+    return updatedData;
+};
+
+// Submit JSON data to webhook
+const submitDataToWebhook = (jsonData) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/webhook", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onload = () => {
+        if (xhr.status === 200) {
+            showNotification('Data submitted successfully!', 'success');
+            toggleFileUploadBox(true);
+            resultSection.classList.add('hidden');
+        } else {
+            showNotification('Failed to submit data.', 'error');
+        }
+    };
+
+    xhr.onerror = () => showNotification('Failed to submit data.', 'error');
+
+    xhr.send(JSON.stringify(jsonData));
+};
+
+// Handle form data submission
+const submitData = () => {
+    const updatedData = getUpdatedFormData();
+    autoSaveAsTextFile(updatedData, "updatedData.txt");
+    submitDataToWebhook(updatedData);
 };
 
 // Event listeners
@@ -286,4 +327,5 @@ fileBrowseButton.addEventListener("click", () => fileBrowseInput.click());
 
 // Submit button event listener
 fileSubmitButton.addEventListener("click", () => handleFileUploading());
-submitDataButton.addEventListener("click", () => submitData());
+// Event listeners
+submitDataButton.addEventListener("click", submitData);
