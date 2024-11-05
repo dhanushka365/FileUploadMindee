@@ -192,8 +192,8 @@ const handleFileUploading = () => {
                 populateDataFields(response.result);
 
                 // Display the PDF preview
-                const pdfPath = response.result.file_path; // PDF path from response
-                pdfFrame.src = pdfPath;
+                 // PDF path from response
+                pdfFrame.src = response.result.file_path;
             } else {
                 showNotification(`Error: ${response.message}`, 'error');
             }
@@ -280,29 +280,85 @@ const getUpdatedFormData = () => {
 // Submit JSON data to webhook
 const submitDataToWebhook = (jsonData) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/webhook", true);
+    const webhookURL = "/webhook";  // Update with full URL if necessary
+
+    xhr.open("POST", webhookURL, true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     xhr.onload = () => {
         if (xhr.status === 200) {
-            showNotification('Data submitted successfully!', 'success');
-            toggleFileUploadBox(true);
-            resultSection.classList.add('hidden');
+            try {
+                //showNotification('Data submitted successfully!', 'success');
+                const response = JSON.parse(xhr.responseText);
+                console.log("Server Response JSON:", response);
+                // Display response in notification
+                showNotification(`Data submitted to the webhook successfully! Response:\n${JSON.stringify(response, null, 2)}`, 'success');
+                toggleFileUploadBox(true);
+                resultSection.classList.add('hidden');
+                console.log("Server Response:", xhr.responseText);  // Log server response for verification
+            }catch (e) {
+                console.error("Response could not be parsed as JSON:", xhr.responseText);
+                showNotification('Submission succeeded, but response parsing failed.', 'warning');
+            }
         } else {
-            showNotification('Failed to submit data.', 'error');
+            console.error(`Submission failed with status ${xhr.status}: ${xhr.statusText}`);
+            console.error("Response:", xhr.responseText);
+            showNotification('Failed to submit data. Please check the console for details.', 'error');
         }
     };
 
-    xhr.onerror = () => showNotification('Failed to submit data.', 'error');
+    xhr.onerror = () => {
+        console.error("Network Error: Could not reach the webhook server.");
+        showNotification('Failed to submit data due to network error.', 'error');
+    };
 
+    // Log the data being sent for verification
+    console.log("Submitting JSON data:", JSON.stringify(jsonData, null, 2));
+
+    // Send the JSON data to the webhook
     xhr.send(JSON.stringify(jsonData));
+};
+
+// Validate JSON structure before submission
+const validateJsonStructure = (jsonData) => {
+    const requiredFields = [
+        "access_key", "email", "fault_detail", "instruction_notes", "paymentbillingname",
+        "paymentcompanyname", "paymentponumber", "propertymanagerdetails.payment_buyer_name",
+        "propertymanagerdetails.paymentbuyeremail", "propertymanagerdetails.paymentbyerphone",
+        "shippingcity", "shippingemail", "shippingname", "shippingphone", "shippingpostalcode",
+        "shippingstreet", "type", "file_path"
+    ];
+
+    for (const field of requiredFields) {
+        const keys = field.split(".");
+        let value = jsonData;
+
+        for (const key of keys) {
+            if (value[key] === undefined) {
+                console.error(`Missing field: ${field}`);
+                return false;
+            }
+            value = value[key];
+        }
+    }
+
+    return true;
 };
 
 // Handle form data submission
 const submitData = () => {
-    const updatedData = getUpdatedFormData();
-    autoSaveAsTextFile(updatedData, "updatedData.txt");
-    submitDataToWebhook(updatedData);
+     const updatedData = getUpdatedFormData();
+
+    // Log the data to console for verification
+    console.log("Submitting JSON data:", JSON.stringify(updatedData, null, 2));
+
+    // Validate JSON structure before sending
+    if (validateJsonStructure(updatedData)) {
+        autoSaveAsTextFile(updatedData, "updatedData.txt");
+        submitDataToWebhook(updatedData);
+    } else {
+        showNotification("JSON structure is incorrect. Please check form fields.", 'error');
+    }
 };
 
 // Event listeners

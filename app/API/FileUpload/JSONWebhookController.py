@@ -1,39 +1,26 @@
 import os
 import requests
-from flask_apispec import doc, use_kwargs
+from flask_apispec import doc
 from flask_apispec.views import MethodResource
 from flask_restful import Resource
-from marshmallow import Schema, fields
-from flask import request
+from flask import request, jsonify
+import logging
 
-# Schema for JSON object request
-class JSONRequestSchema(Schema):
-    access_key = fields.Str(required=True, description="Access key for the request")
-    email = fields.Email(required=True, description="User's email")
-    fault_detail = fields.Str(required=True, description="Details of the fault")
-    instruction_notes = fields.Str(required=True, description="Instruction notes")
-    paymentbillingname = fields.Str(required=True, description="Billing name for payment")
-    paymentcompanyname = fields.Str(description="Company name for payment")
-    paymentponumber = fields.Str(description="Purchase order number")
-    propertymanagerdetails = fields.Dict(required=True, description="Property manager details")
-    shippingcity = fields.Str(required=True, description="City for shipping")
-    shippingemail = fields.Email(required=True, description="Email for shipping")
-    shippingname = fields.Str(required=True, description="Name for shipping")
-    shippingphone = fields.Str(required=True, description="Phone number for shipping")
-    shippingpostalcode = fields.Str(required=True, description="Postal code for shipping")
-    shippingstreet = fields.Str(required=True, description="Street address for shipping")
-    type = fields.Str(required=True, description="Type of request")
-    file_path = fields.Str(required=True, description="Path of the file associated with the request")
 
 # Controller for JSON object submission
 class JSONWebhookController(MethodResource, Resource):
     @doc(description='This API accepts a JSON object and forwards it to a webhook', tags=['JSON Webhook'])
-    @use_kwargs(JSONRequestSchema, location='json')  # 'json' specifies the body should be JSON
-    def post(self, **json_data):
+    def post(self):
         """
         Post method for JSON object submission.
         Accepts a JSON payload, processes it, and forwards it to the webhook.
         """
+        # Get the incoming JSON data directly from the request
+        json_data = request.get_json()
+
+        # Log the received data for debugging
+        logging.info(f"Received data: {json_data}")
+
         webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
 
         try:
