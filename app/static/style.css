@@ -201,9 +201,17 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    transition: all 0.5s ease;
+    animation: slideIn 0.5s ease-out;
 }
 
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
 .notification.error {
     background-color: #dc3545;
 }
@@ -243,7 +251,7 @@ body {
 }
 
 .form-section {
-  flex: 1 1 40%;
+    flex: 1 1 40%;
   max-width: 40%;
   min-width: 300px;
   background-color: #fff;
@@ -253,6 +261,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .form-section h2 {
@@ -263,18 +272,67 @@ body {
   font-weight: 700;
 }
 
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* Styling for the form and form fields */
 #dataForm {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 #dataFields {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+}
+
+.form-field label {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #5145BA;
+}
+
+.form-field input[type="text"],
+.form-field textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+/* Input Focus Styles */
+.form-field input[type="text"]:focus,
+.form-field textarea:focus {
+  border-color: #5145BA;
+  background-color: #f0f4ff;
+}
+
+/* Ensuring Content is Visible */
+.form-field input[type="text"] {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Placeholder Animation */
+.form-field input[type="text"]:placeholder-shown,
+.form-field textarea:placeholder-shown {
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
 }
 
 button {

@@ -31,9 +31,9 @@ const populateDataFields = (jsonResponse) => {
     dataFields.innerHTML = ""; // Clear existing fields
 
     // Recursive function to create input fields for each key in the JSON
-    const createField = (key, value) => {
+    const createField = (key, value, isSubField = false) => {
         const fieldWrapper = document.createElement('div');
-        fieldWrapper.classList.add('field-wrapper');
+        fieldWrapper.classList.add(isSubField ? 'sub-field-wrapper' : 'field-wrapper');
 
         const label = document.createElement('label');
         label.innerText = key;
@@ -45,18 +45,35 @@ const populateDataFields = (jsonResponse) => {
 
         fieldWrapper.appendChild(label);
         fieldWrapper.appendChild(input);
-        dataFields.appendChild(fieldWrapper);
+        return fieldWrapper;
+    };
+
+    // Recursive function to create a group container for nested objects
+    const createGroupContainer = (groupName) => {
+        const groupContainer = document.createElement('div');
+        groupContainer.classList.add('group-container');
+
+        const groupLabel = document.createElement('h3');
+        groupLabel.innerText = groupName;
+        groupContainer.appendChild(groupLabel);
+
+        return groupContainer;
     };
 
     // Process each key in the JSON, including nested objects
-    const processData = (data, parentKey = '') => {
+    const processData = (data, parentKey = '', container = dataFields) => {
         for (const [key, value] of Object.entries(data)) {
             const fieldName = parentKey ? `${parentKey}.${key}` : key;
 
+            // If it's an object, create a group container for it
             if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-                processData(value, fieldName); // Process nested objects recursively
+                const groupContainer = createGroupContainer(key);
+                processData(value, fieldName, groupContainer); // Process nested objects recursively
+                container.appendChild(groupContainer); // Append the group container to the specified container
             } else {
-                createField(fieldName, value);
+                // Append individual fields directly
+                const fieldWrapper = createField(key, value, parentKey !== '');
+                container.appendChild(fieldWrapper);
             }
         }
     };
