@@ -133,7 +133,7 @@ class FileUploadController(MethodResource, Resource):
                 "Cluttons": "cluttons_repair",
                 "GCP": "gcp_repair",
                 "Haart": "harrt",
-                "Hamptons": "hamptons_repair",
+                "Hamptons": "hampton_new",
                 "KFH": "kfh_repair",
                 "marshandparsons": "mash_and_parson_replacement",
                 "MyLako": "mylako_repair",
