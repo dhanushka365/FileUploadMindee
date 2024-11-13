@@ -37,11 +37,10 @@ const populateDataFields = (jsonResponse) => {
 
         const label = document.createElement('label');
         label.innerText = key;
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = value || ""; // Set to empty string if null
-        input.name = key;
-        input.classList.add('editable-field');
+        const input = document.createElement('textarea');
+         input.value = value || ""; // Set to empty string if null
+         input.name = key;
+         input.classList.add('editable-field');
 
         fieldWrapper.appendChild(label);
         fieldWrapper.appendChild(input);
