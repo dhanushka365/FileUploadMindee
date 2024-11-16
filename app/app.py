@@ -13,6 +13,7 @@ try:
     # Import your controllers
     from API.ClusterHealth.HealthCheckController import HeathController
     from API.FileUpload.FileUploadController import FileUploadController
+    from API.AlanDeMaid.AlanDeMaidFileUploadController import AlanDeMaidFileUploadController
     from API.FileUpload.JSONWebhookController import JSONWebhookController
 
 except Exception as e:
@@ -48,6 +49,9 @@ try:
 
     api.add_resource(FileUploadController, '/upload')
     docs.register(FileUploadController)
+
+    api.add_resource(AlanDeMaidFileUploadController, '/modelUpload')
+    docs.register(AlanDeMaidFileUploadController)
 
     api.add_resource(JSONWebhookController,'/webhook')
     docs.register(JSONWebhookController)
