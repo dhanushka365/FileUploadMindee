@@ -8,21 +8,31 @@ try:
     from marshmallow import Schema, fields
     from werkzeug.utils import secure_filename
     from flask import request, jsonify
+    import re  # For sanitizing filenames
+    from PIL import Image
+    import fitz  # PyMuPDF for PDF to image conversion
 
     print("All imports are ok............")
 except Exception as e:
     print(f"Error: {e}")
 
 # Define the base directory where files will be uploaded
-BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary") # in server place remove app
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")  # in server place remove app
 #BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary") # in server place remove app
+IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "Images")
 
 # Ensure the base directory exists
 if not os.path.exists(BASE_DIRECTORY):
     os.makedirs(BASE_DIRECTORY)
 
+# Ensure the base directory exists
+if not os.path.exists(IMAGE_OUTPUT_DIRECTORY):
+    os.makedirs(IMAGE_OUTPUT_DIRECTORY)
+
+
 class AlanDeMaidFileUploadSchema(Schema):
     file = fields.Raw(required=True, description="Alan De Maid PDFs File to upload", type="file")
+
 
 def extract_info_from_pdf(file_path):
     """
@@ -92,6 +102,35 @@ def move_file_to_company_folder(temp_file_path, company_name, new_filename):
 
     return new_file_path
 
+
+def sanitize_filename(filename):
+    """
+    Sanitizes the filename by replacing invalid characters.
+    """
+    return re.sub(r'[<>:"/\\|?*]', '_', filename)
+
+
+def convert_to_image(temp_file_path):
+    """
+    Converts each page of a PDF into an image and saves it.
+    """
+    pdf_document = fitz.open(temp_file_path)
+    pdf_name = sanitize_filename(os.path.splitext(os.path.basename(temp_file_path))[0])
+    image_paths = []
+
+    for page_num in range(len(pdf_document)):
+        page = pdf_document[page_num]
+        pix = page.get_pixmap(dpi=300)  # Adjust DPI for quality
+        img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+
+        img_filename = f"{pdf_name}_page_{page_num + 1}.png"
+        img_output_path = os.path.join(IMAGE_OUTPUT_DIRECTORY, img_filename)
+        img.save(img_output_path)
+        image_paths.append(img_output_path)
+
+    return image_paths
+
+
 class AlanDeMaidFileUploadController(MethodResource, Resource):
     @doc(description='Alan De Maid PDFs Upload endpoint', tags=['Alan De Maid PDFs  Endpoint'])
     @use_kwargs(AlanDeMaidFileUploadSchema, location='files')  # 'files' is used for file uploads
@@ -114,18 +153,25 @@ class AlanDeMaidFileUploadController(MethodResource, Resource):
             return {'message': 'Only PDF files are allowed.'}, 400
 
         try:
-            # Step 1: Save the file temporarily in the 'incoming' folder
+            # Step 1: Save the file temporarily
             temp_file_path = save_file(file)
 
             # Step 2: Extract the company name from the PDF
             company_name = extract_info_from_pdf(temp_file_path)
             if company_name == "not found":
-                return {'message': 'No valid company found in the PDF'}, 400
+                return {'message': 'No valid company name found in the PDF'}, 400
 
+            # Step 3: Convert PDF to images
+            image_path = convert_to_image(temp_file_path)
+
+            # Step 4: Move the file to a company-specific folder
+            final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
 
             return {
-                # 'result': json_content
-                'result': "cleaned_data"
+                'message': 'File processed successfully',
+                'company_name': company_name,
+                'file_path': final_file_path,
+                'image_paths': image_path
             }, 201
 
         except Exception as e:
@@ -133,10 +179,11 @@ class AlanDeMaidFileUploadController(MethodResource, Resource):
                 os.remove(temp_file_path)
             return {'message': 'Failed to process file with Mindee', 'error': str(e)}, 500
 
-    KEYWORDS = [
-        "Benham", "CBRE", "Chestertons", "Cluttons",
-        "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
-        "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village",
-        "alandemaid", "bairstoweves", "gpees", "Mann",
-        "LCP", "Foxtons", "Cole", "Chase Buchanan’s", "Featherstone"
-    ]
+
+KEYWORDS = [
+    "Benham", "CBRE", "Chestertons", "Cluttons",
+    "GCP", "Haart", "Hamptons", "KFH", "marshandparsons", "MyLako",
+    "Savills", "Squires", "APW", "winkworth", "Streets Ahead", "metro-village",
+    "alandemaid", "bairstoweves", "gpees", "Mann",
+    "LCP", "Foxtons", "Cole", "Chase Buchanan’s", "Featherstone"
+]
