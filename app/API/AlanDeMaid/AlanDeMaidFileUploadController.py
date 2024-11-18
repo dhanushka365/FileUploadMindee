@@ -98,24 +98,25 @@ def convert_to_image(temp_file_path):
 
 def process_and_save_image(image_path, output_dir):
     try:
-        # Load and preprocess the image
+        # Load the image
         img_cv = cv2.imread(image_path)
         if img_cv is None:
             raise FileNotFoundError(f"Image not found at {image_path}")
 
+        # Convert to grayscale
         img_gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
-        img_contrast = cv2.convertScaleAbs(img_gray, alpha=1.5, beta=0)
-        img_thresh = cv2.adaptiveThreshold(img_contrast, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 5)
-        img_denoised = cv2.bilateralFilter(img_thresh, d=9, sigmaColor=75, sigmaSpace=75)
 
-        # Optional: Resize image for better OCR
-        img_resized = cv2.resize(img_denoised, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+        # Apply adaptive thresholding
+        img_thresh = cv2.adaptiveThreshold(img_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
+        # Denoise the image
+        img_denoised = cv2.fastNlMeansDenoising(img_thresh, None, 30, 7, 21)
 
         # Initialize EasyOCR reader
-        reader = easyocr.Reader(['en'], gpu=False, verbose=False)
+        reader = easyocr.Reader(['en'], gpu=False, verbose=False)  # Disable verbose and GPU if unnecessary
 
         # Perform OCR
-        results = reader.readtext(img_resized, detail=1)
+        results = reader.readtext(img_denoised, detail=1)
 
         # Prepare data for pandas DataFrame
         data_list = []
@@ -123,7 +124,8 @@ def process_and_save_image(image_path, output_dir):
             (top_left, top_right, bottom_right, bottom_left) = bbox
             x, y = int(top_left[0]), int(top_left[1])
             w, h = int(bottom_right[0] - top_left[0]), int(bottom_right[1] - top_left[1])
-            text = text.strip().encode('utf-8', 'ignore').decode('utf-8')  # Clean text
+            # Clean the text to handle any special characters
+            text = text.strip().encode('utf-8', 'ignore').decode('utf-8')
             data_list.append([x, y, w, h, text])
 
         # Create DataFrame
