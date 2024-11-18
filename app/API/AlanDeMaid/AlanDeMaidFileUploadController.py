@@ -171,7 +171,7 @@ class AlanDeMaidFileUploadController(MethodResource, Resource):
             annotated_image_path = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
 
             # Construct accessible URLs
-            base_url = request.host_url  # Get the base URL of the current request
+            base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
             file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
             annotated_image_url = urljoin(base_url, os.path.relpath(annotated_image_path, BASE_DIRECTORY))
             image_urls = [urljoin(base_url, os.path.relpath(img_path, BASE_DIRECTORY)) for img_path in image_paths]
