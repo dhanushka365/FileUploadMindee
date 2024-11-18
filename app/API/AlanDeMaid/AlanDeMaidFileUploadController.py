@@ -16,7 +16,7 @@ try:
     import re  # For sanitizing filenames
     from PIL import Image
     import fitz  # PyMuPDF for PDF to image conversion
-
+    from urllib.parse import urljoin  # For creating full URLs
     print("All imports are ok............")
 except Exception as e:
     print(f"Error: {e}")
@@ -169,12 +169,19 @@ class AlanDeMaidFileUploadController(MethodResource, Resource):
             image_paths = convert_to_image(temp_file_path)
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             annotated_image_path = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
+
+            # Construct accessible URLs
+            base_url = request.host_url  # Get the base URL of the current request
+            file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
+            annotated_image_url = urljoin(base_url, os.path.relpath(annotated_image_path, BASE_DIRECTORY))
+            image_urls = [urljoin(base_url, os.path.relpath(img_path, BASE_DIRECTORY)) for img_path in image_paths]
+
             return {
                 'message': 'File processed successfully',
                 'company_name': company_name,
-                'file_path': final_file_path,
-                'image_paths': image_paths,
-                'annotated_image': annotated_image_path
+                'file_url': file_url,
+                'image_urls': image_urls,
+                'annotated_image_url': annotated_image_url
             }, 201
         except Exception as e:
             return {'message': 'Failed to process file', 'error': str(e)}, 500
