@@ -6,6 +6,7 @@ RUN pip3 --version
 WORKDIR /app
 COPY ./app /app
 
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
 RUN pip3 install --no-cache-dir -r requirements.txt
 RUN apt-get install openssl
 
