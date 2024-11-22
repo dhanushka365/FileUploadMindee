@@ -263,7 +263,7 @@ class GPTFileUploadController(MethodResource, Resource):
             image_paths = convert_to_image(temp_file_path)
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             annotated_image_path, extracted_texts = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
-            #api_key = "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"
+
             result = generate_json_from_text(api_key, extracted_texts)
             # Construct accessible URLs
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
