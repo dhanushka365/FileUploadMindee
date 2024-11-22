@@ -265,18 +265,17 @@ class GPTFileUploadController(MethodResource, Resource):
             annotated_image_path, extracted_texts = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
 
             result = generate_json_from_text(api_key, extracted_texts)
+
             # Construct accessible URLs
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
             file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
             annotated_image_url = urljoin(base_url, os.path.relpath(annotated_image_path, BASE_DIRECTORY))
             image_urls = [urljoin(base_url, os.path.relpath(img_path, BASE_DIRECTORY)) for img_path in image_paths]
+            result['file_path'] = file_url
+            result['annotated_image_path'] = annotated_image_path
 
             return {
-                'message': 'File processed successfully',
-                'company_name': company_name,
-                'file_url': file_url,
-                'image_urls': image_urls,
-                'annotated_image_url': annotated_image_url
+                'result': result
             }, 201
         except Exception as r:
             return {'message': 'Failed to process file', 'error': str(r)}, 500

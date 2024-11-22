@@ -9,17 +9,20 @@ from marshmallow import Schema, fields
 from mindee import Client, product
 from werkzeug.utils import secure_filename
 from flask import request
+
 # Define the base directory where files will be uploaded
 #BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary") # in server place remove app
-BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary") # in server place remove app
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")  # in server place remove app
 
 # Ensure the base directory exists
 if not os.path.exists(BASE_DIRECTORY):
     os.makedirs(BASE_DIRECTORY)
 
+
 # Schema for file upload request
 class FileUploadSchema(Schema):
     file = fields.Raw(required=True, description="File to upload", type="file")
+
 
 def extract_info_from_pdf(file_path):
     """
@@ -177,7 +180,9 @@ class FileUploadController(MethodResource, Resource):
                 elif "GeneratedObjectField" in str(field_type):
                     return {
                         key: extract_field_value(getattr(field, key)) for key in dir(field)
-                        if not key.startswith('__') and key not in ['page_id', '_GeneratedObjectField__printable_values', '_str_level']
+                        if
+                        not key.startswith('__') and key not in ['page_id', '_GeneratedObjectField__printable_values',
+                                                                 '_str_level']
                     }
                 else:
                     return str(field)
@@ -220,8 +225,8 @@ class FileUploadController(MethodResource, Resource):
             #     print(f"Failed to send webhook: {e}")
 
             return {
-                  # 'result': json_content
-                    'result': cleaned_data
+                # 'result': json_content
+                'result': cleaned_data
             }, 201
 
         except Exception as e:
