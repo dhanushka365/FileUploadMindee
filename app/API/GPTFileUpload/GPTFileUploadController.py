@@ -263,7 +263,7 @@ class GPTFileUploadController(MethodResource, Resource):
             image_paths = convert_to_image(temp_file_path)
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             annotated_image_path, extracted_texts = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
-
+            api_key = " "
             # Construct accessible URLs
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
             file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
