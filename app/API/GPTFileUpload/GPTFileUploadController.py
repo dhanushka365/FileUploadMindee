@@ -91,7 +91,7 @@ def convert_to_image(temp_file_path):
     image_paths = []
     for page_num in range(len(pdf_document)):
         page = pdf_document[page_num]
-        pix = page.get_pixmap(dpi=300)
+        pix = page.get_pixmap(dpi=350)
         img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
         img_filename = f"{pdf_name}_page_{page_num + 1}.png"
         img_output_path = os.path.join(IMAGE_OUTPUT_DIRECTORY, img_filename)
@@ -155,8 +155,8 @@ def process_and_save_image(image_path, output_dir):
         # Return the annotated image path and extracted texts
         return output_path, extracted_texts
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    except Exception as y:
+        print(f"An error occurred: {y}")
         return None, None
 
 
@@ -263,7 +263,8 @@ class GPTFileUploadController(MethodResource, Resource):
             image_paths = convert_to_image(temp_file_path)
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             annotated_image_path, extracted_texts = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
-            api_key = " "
+            api_key = "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"
+            result = generate_json_from_text(api_key, extracted_texts)
             # Construct accessible URLs
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
             file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
