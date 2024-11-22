@@ -14,6 +14,7 @@ try:
     from API.ClusterHealth.HealthCheckController import HeathController
     from API.FileUpload.FileUploadController import FileUploadController
     from API.AlanDeMaid.AlanDeMaidFileUploadController import AlanDeMaidFileUploadController
+    from API.GPTFileUpload.GPTFileUploadController import GPTFileUploadController
     from API.FileUpload.JSONWebhookController import JSONWebhookController
 
 except Exception as e:
@@ -52,6 +53,9 @@ try:
 
     api.add_resource(AlanDeMaidFileUploadController, '/modelUpload')
     docs.register(AlanDeMaidFileUploadController)
+
+    api.add_resource(GPTFileUploadController, '/GPTFileUpload')
+    docs.register(GPTFileUploadController)
 
     api.add_resource(JSONWebhookController,'/webhook')
     docs.register(JSONWebhookController)
