@@ -264,6 +264,7 @@ class GPTFileUploadController(MethodResource, Resource):
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             annotated_image_path, extracted_texts = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
 
+
             result = generate_json_from_text(api_key, extracted_texts)
 
             # Construct accessible URLs
