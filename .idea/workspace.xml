@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="changes added">
-      <change afterPath="$PROJECT_DIR$/app/API/GPTFileUpload/GPTFileUploadController.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/script.js" afterDir="false" />
-    </list>
+    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="changes committed" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -184,7 +178,7 @@
       <workItem from="1728376376128" duration="9173000" />
       <workItem from="1730100013765" duration="25417000" />
       <workItem from="1730566459558" duration="18544000" />
-      <workItem from="1731823669571" duration="30207000" />
+      <workItem from="1731823669571" duration="30524000" />
     </task>
     <task id="LOCAL-00001" summary="intial commit">
       <option name="closed" value="true" />
@@ -522,7 +516,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731913201070</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732250519164</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1732250519164</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -564,11 +566,11 @@
     <MESSAGE value="CSS updations committed" />
     <MESSAGE value="css updated" />
     <MESSAGE value="pdf boder issue fixed" />
-    <MESSAGE value="changes committed" />
     <MESSAGE value="easy ocr added" />
     <MESSAGE value="easy ocr changes added" />
     <MESSAGE value="changes added" />
-    <option name="LAST_COMMIT_MESSAGE" value="changes added" />
+    <MESSAGE value="changes committed" />
+    <option name="LAST_COMMIT_MESSAGE" value="changes committed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
