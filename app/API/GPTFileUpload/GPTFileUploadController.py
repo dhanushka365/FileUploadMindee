@@ -25,8 +25,8 @@ except Exception as e:
     print(f"Error: {e}")
 
 # Base directories
-BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
-#BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
+#BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
 IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "Images")
 ANNOTATED_IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "AnnotatedImages")
 
@@ -88,16 +88,32 @@ def extract_info_from_pdf(file_path):
 def convert_to_image(temp_file_path):
     pdf_document = fitz.open(temp_file_path)
     pdf_name = sanitize_filename(os.path.splitext(os.path.basename(temp_file_path))[0])
-    image_paths = []
+    images = []
+
+    # Generate images for each page
     for page_num in range(len(pdf_document)):
         page = pdf_document[page_num]
         pix = page.get_pixmap(dpi=350)
         img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
-        img_filename = f"{pdf_name}_page_{page_num + 1}.png"
-        img_output_path = os.path.join(IMAGE_OUTPUT_DIRECTORY, img_filename)
-        img.save(img_output_path)
-        image_paths.append(img_output_path)
-    return image_paths
+        images.append(img)
+
+    # Merge all images into a single one (vertically stacked)
+    total_width = max(img.width for img in images)
+    total_height = sum(img.height for img in images)
+    merged_image = Image.new("RGB", (total_width, total_height))
+
+    # Paste each image into the merged image
+    current_height = 0
+    for img in images:
+        merged_image.paste(img, (0, current_height))
+        current_height += img.height
+
+    # Save the merged image
+    merged_img_filename = f"{pdf_name}_merged.png"
+    merged_img_output_path = os.path.join(IMAGE_OUTPUT_DIRECTORY, merged_img_filename)
+    merged_image.save(merged_img_output_path)
+
+    return merged_img_output_path
 
 
 def process_and_save_image(image_path, output_dir):
@@ -119,7 +135,7 @@ def process_and_save_image(image_path, output_dir):
         img_denoised = cv2.fastNlMeansDenoising(img_thresh, None, 30, 7, 21)
 
         # Initialize EasyOCR reader
-        reader = easyocr.Reader(['en'], gpu=False, verbose=False)  # Disable verbose and GPU if unnecessary
+        reader = easyocr.Reader(['en'], gpu=True, verbose=True)  # Disable verbose and GPU if unnecessary
 
         # Perform OCR
         results = reader.readtext(img_denoised, detail=1)
@@ -240,8 +256,8 @@ Ensure all details are filled correctly based on the provided text. Provide the 
     except json.JSONDecodeError:
         print("Failed to parse JSON from the response. Ensure the model output is valid JSON.")
         return None
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    except Exception as w:
+        print(f"An error occurred: {w}")
         return None
 
 
@@ -262,9 +278,10 @@ class GPTFileUploadController(MethodResource, Resource):
             company_name = extract_info_from_pdf(temp_file_path)
             if company_name == "not found":
                 return {'message': 'No valid company name found in the PDF'}, 400
-            image_paths = convert_to_image(temp_file_path)
+            image_path = convert_to_image(temp_file_path)
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
-            annotated_image_path, extracted_texts = process_and_save_image(image_paths[0], ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
+            annotated_image_path, extracted_texts = process_and_save_image(image_path,
+                                                                           ANNOTATED_IMAGE_OUTPUT_DIRECTORY)
 
 
             result = generate_json_from_text(api_key, extracted_texts)
@@ -273,7 +290,7 @@ class GPTFileUploadController(MethodResource, Resource):
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
             file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
             annotated_image_url = urljoin(base_url, os.path.relpath(annotated_image_path, BASE_DIRECTORY))
-            image_urls = [urljoin(base_url, os.path.relpath(img_path, BASE_DIRECTORY)) for img_path in image_paths]
+            image_urls = [urljoin(base_url, os.path.relpath(img_path, BASE_DIRECTORY)) for img_path in image_path]
             result['file_path'] = file_url
             result['annotated_image_path'] = annotated_image_path
 
