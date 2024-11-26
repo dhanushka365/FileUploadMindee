@@ -25,8 +25,8 @@ except Exception as e:
     print(f"Error: {e}")
 
 # Base directories
-#BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
-BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
+#BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
 IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "Images")
 ANNOTATED_IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "AnnotatedImages")
 
@@ -135,7 +135,7 @@ def process_and_save_image(image_path, output_dir):
         img_denoised = cv2.fastNlMeansDenoising(img_thresh, None, 30, 7, 21)
 
         # Initialize EasyOCR reader
-        reader = easyocr.Reader(['en'], gpu=True, verbose=True)  # Disable verbose and GPU if unnecessary
+        reader = easyocr.Reader(['en'], gpu=False, verbose=False)  # Disable verbose and GPU if unnecessary
 
         # Perform OCR
         results = reader.readtext(img_denoised, detail=1)
@@ -187,18 +187,18 @@ def generate_json_from_text(api_key, input_text):
             "content": (
                 "You are an assistant that extracts structured data from unstructured text. "
                 "Your task is to extract relevant details and format them as JSON in the specified format. "
-                "Here the 'paymentbillingname' is the landlord's name. "
-                "'paymentponumber' is the work order number. "
-                "'shippingcity', 'shippingstreet', and 'shippingpostalcode' are mentioned in the property address. "
-                "'shippingemail', 'shippingname', and 'shippingphone' provide tenant details. "
-                "'fault_detail' is a short sentence about the work order. "
-                "'instruction_notes' is a detailed description of the work order, including the issue"
+                "Here in the final output json 'paymentbillingname' is the landlord's name. "
+                "Here in the final output json 'paymentponumber' is the work order number. "
+                "Here in the final output json 'shippingcity', 'shippingstreet', and 'shippingpostalcode' are mentioned in the property address. "
+                "Here in the final output json 'shippingemail', 'shippingname', and 'shippingphone' provide tenant details. "
+                "Here in the final output json 'fault_detail' is a short sentence about the work order. "
+                "Here in the final output json 'instruction_notes' is a detailed description of the work order, including the issue"
                 "what to do, customer wishes, and any special notes or prices. "
-                "'shippingcompanyname' should be the company name for billing if applicable. "
-                "'type' indicates whether the work order is a repair or a replacement. "
+                "Here in the final output json 'shippingcompanyname' should be the company name for billing if applicable. "
+                "Here in the final output json 'type' indicates whether the work order is a repair or a replacement. Always in the final json response type should contain the only repair or replacement according to the work order type "
                 "In BASE PROPERTY SPECIALISTS LTD work orders  'Problem reported' is the place to extract details for 'fault_detail' and the 'Description' is the place to extract details for 'instruction_notes' "
-                "'propertymanagerdetails' contains the details of the work manager or the person who instructed the work order."
-                "'access_key' means how to get access to the property. It might be vua tenant. Like wise if some one need to reach the fault device some time he need to get access to the property. that details should be come here. If its tenant give me a answer like tenant"
+                "Here in the final output json 'propertymanagerdetails' contains the details of the work manager or the person who instructed the work order."
+                "Here in the final output json 'access_key' means how to get access to the property. It might be via tenant. Like wise if some one need to reach the fault device some time he need to get access to the property. that details should be come here. If its tenant give me a answer like tenant"
             ),
         },
         {
