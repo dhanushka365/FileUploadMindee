@@ -20,8 +20,8 @@ except Exception as e:
     print(f"Error: {e}")
 
 # Base directories
-BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
-#BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
+#BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
 # Ensure directories exist
 os.makedirs(BASE_DIRECTORY, exist_ok=True)
 
