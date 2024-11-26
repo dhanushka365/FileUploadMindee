@@ -25,8 +25,8 @@ except Exception as e:
     print(f"Error: {e}")
 
 # Base directories
-BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
-#BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
+#BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
+BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
 IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "Images")
 ANNOTATED_IMAGE_OUTPUT_DIRECTORY = os.path.join(BASE_DIRECTORY, "AnnotatedImages")
 
