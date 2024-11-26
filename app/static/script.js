@@ -219,7 +219,7 @@ const handleFileUploading = () => {
             showNotification(`Failed to upload ${file.name}. Please try again.`, 'error');
         });
 
-        xhr.open("POST", "/GPTFileUpload", true);
+        xhr.open("POST", "/LightGPTFileUpload", true);
         xhr.send(formData);
     });
 };

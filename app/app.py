@@ -15,6 +15,7 @@ try:
     from API.FileUpload.FileUploadController import FileUploadController
     from API.AlanDeMaid.AlanDeMaidFileUploadController import AlanDeMaidFileUploadController
     from API.GPTFileUpload.GPTFileUploadController import GPTFileUploadController
+    from API.LightGPTFileUpload.LightGPTFileUploadController import LightGPTFileUploadController
     from API.FileUpload.JSONWebhookController import JSONWebhookController
 
 except Exception as e:
@@ -56,6 +57,9 @@ try:
 
     api.add_resource(GPTFileUploadController, '/GPTFileUpload')
     docs.register(GPTFileUploadController)
+
+    api.add_resource(LightGPTFileUploadController, '/LightGPTFileUpload')
+    docs.register(LightGPTFileUploadController)
 
     api.add_resource(JSONWebhookController,'/webhook')
     docs.register(JSONWebhookController)
