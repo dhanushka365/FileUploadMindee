@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="changes committed">
-      <change afterPath="$PROJECT_DIR$/app/API/LightGPTFileUpload/LightGPTFileUploadController.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/API/GPTFileUpload/GPTFileUploadController.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/API/GPTFileUpload/GPTFileUploadController.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/API/LightGPTFileUpload/LightGPTFileUploadController.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/API/LightGPTFileUpload/LightGPTFileUploadController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +39,7 @@
     <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master-MLModelAlanDeMaid" />
+        <entry key="$PROJECT_DIR$" value="master-GPTFileUpload" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -62,7 +62,7 @@
     "Flask server.Flask (main.py).executor": "Run",
     "Python.app.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master-GPTFileUpload",
+    "git-widget-placeholder": "master-GPTFileUpload-version2",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/user/PycharmProjects/FileuploadMindee/app/API/LightGPTFileUpload",
     "node.js.detected.package.eslint": "true",
@@ -70,6 +70,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -186,46 +187,6 @@
       <workItem from="1730100013765" duration="25417000" />
       <workItem from="1730566459558" duration="18544000" />
       <workItem from="1731823669571" duration="30524000" />
-    </task>
-    <task id="LOCAL-00006" summary="name issue corrected">
-      <option name="closed" value="true" />
-      <created>1729057714774</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1729057714774</updated>
-    </task>
-    <task id="LOCAL-00007" summary="benham corrected">
-      <option name="closed" value="true" />
-      <created>1729059499201</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1729059499201</updated>
-    </task>
-    <task id="LOCAL-00008" summary="send fil_path to webhook">
-      <option name="closed" value="true" />
-      <created>1729065435674</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1729065435674</updated>
-    </task>
-    <task id="LOCAL-00009" summary="alandemaid mindee endpoint added">
-      <option name="closed" value="true" />
-      <created>1729140388857</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1729140388857</updated>
-    </task>
-    <task id="LOCAL-00010" summary="baistow eves mindee endpoint added">
-      <option name="closed" value="true" />
-      <created>1729140774371</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1729140774371</updated>
     </task>
     <task id="LOCAL-00011" summary="LCP mindee endpoint added">
       <option name="closed" value="true" />
@@ -579,7 +540,47 @@
       <option name="project" value="LOCAL" />
       <updated>1732344811906</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732589189286</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1732589189286</updated>
+    </task>
+    <task id="LOCAL-00056" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732589220491</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1732589220491</updated>
+    </task>
+    <task id="LOCAL-00057" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732589286867</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1732589286867</updated>
+    </task>
+    <task id="LOCAL-00058" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732589326443</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1732589326443</updated>
+    </task>
+    <task id="LOCAL-00059" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732589371970</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1732589371970</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -717,7 +718,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FileuploadMindee$FileuploadMindee.coverage" NAME="FileuploadMindee Coverage Results" MODIFIED="1727847206611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/FileuploadMindee$Flask__app_app_py_.coverage" NAME="Flask (app/app.py) Coverage Results" MODIFIED="1732588228131" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FileuploadMindee$Flask__app_app_py_.coverage" NAME="Flask (app/app.py) Coverage Results" MODIFIED="1732608212033" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FileuploadMindee$Flask__main_py_.coverage" NAME="Flask (main.py) Coverage Results" MODIFIED="1727848355283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/FileuploadMindee$app.coverage" NAME="app Coverage Results" MODIFIED="1727848851246" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
   </component>

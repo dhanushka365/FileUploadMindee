@@ -256,26 +256,26 @@ const autoSaveAsTextFile = (data, filename) => {
 // Update form data as JSON object for submission
 const getUpdatedFormData = () => {
     const updatedData = {
-        "access_key": "",
-        "email": "",
-        "fault_detail": "",
+        "type": "",
+        "shippingname": "",
+        "shippingstreet": "",
+        "shippingcity": "",
+        "shippingpostalcode": "",
+        "shippingphone": "",
+        "shippingemail": "",
         "instruction_notes": "",
-        "paymentbillingname": "",
-        "paymentcompanyname": "",
-        "paymentponumber": "",
+        "fault_detail": "",
+        "access_key": "",
         "propertymanagerdetails": {
             "payment_buyer_name": "",
             "paymentbuyeremail": "",
             "paymentbyerphone": ""
         },
-        "shippingcity": "",
-        "shippingemail": "",
-        "shippingname": "",
-        "shippingphone": "",
-        "shippingpostalcode": "",
-        "shippingstreet": "",
-        "type": "",
-        "file_path": ""
+        "file_path": "",
+        "paymentcompanyname": "",
+        "paymentbillingname": "",
+        "paymentponumber": "",
+        "email": "",
     };
 
     dataFields.querySelectorAll('.editable-field').forEach(input => {
