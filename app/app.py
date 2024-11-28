@@ -11,7 +11,7 @@ try:
     # Import your controllers
     from API.ClusterHealth.HealthCheckController import HeathController
     from API.FileUpload.FileUploadController import FileUploadController
-
+    from API.GPTFileUpload.GPTFileUploadController import GPTFileUploadController
 except Exception as e:
     print("__init__ Modules are Missing: {}".format(e))
 
@@ -45,6 +45,9 @@ try:
 
     api.add_resource(FileUploadController, '/upload')
     docs.register(FileUploadController)
+
+    api.add_resource(GPTFileUploadController, '/GPTUpload')
+    docs.register(GPTFileUploadController)
 
 except Exception as e:
     print("Modules are Missing: {}".format(e))

@@ -139,7 +139,7 @@ const handleFileUploading = () => {
             showNotification(`Failed to upload ${file.name}. Please try again.`, 'error');
         });
 
-        xhr.open("POST", "/upload", true);
+        xhr.open("POST", "/GPTUpload", true);
         xhr.send(formData);
     });
 };
