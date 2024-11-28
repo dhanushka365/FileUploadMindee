@@ -103,35 +103,35 @@ def generate_json_from_text(api_key, input_text):
         {
             "role": "user",
             "content": f"""
-Extract the relevant details from the following text and return a JSON response in the specified format:
-{{
-  "access_key": "",
-  "email": "",
-  "fault_detail": "",
-  "instruction_notes": "",
-  "paymentbillingname": "",
-  "paymentcompanyname": "",
-  "paymentponumber": "",
-  "propertymanagerdetails": {{
-    "payment_buyer_name": "",
-    "paymentbuyeremail": "",
-    "paymentbyerphone": ""
-  }},
-  "shippingcity": "",
-  "shippingemail": "",
-  "shippingname": "",
-  "shippingphone": "",
-  "shippingpostalcode": "",
-  "shippingstreet": "",
-  "type": "",
-  "shippingcompanyname": ""
-}}
-
-Text:
-{input_text}
-
-Ensure all details are filled correctly based on the provided text. Provide the JSON output only.
-"""
+            Extract the relevant details from the following text and return a JSON response in the specified format:
+            {{
+              "access_key": "",
+              "email": "",
+              "fault_detail": "",
+              "instruction_notes": "",
+              "paymentbillingname": "",
+              "paymentcompanyname": "",
+              "paymentponumber": "",
+              "propertymanagerdetails": {{
+                "payment_buyer_name": "",
+                "paymentbuyeremail": "",
+                "paymentbyerphone": ""
+              }},
+              "shippingcity": "",
+              "shippingemail": "",
+              "shippingname": "",
+              "shippingphone": "",
+              "shippingpostalcode": "",
+              "shippingstreet": "",
+              "type": "",
+              "shippingcompanyname": ""
+            }}
+            
+            Text:
+            {input_text}
+            
+            Ensure all details are filled correctly based on the provided text. Provide the JSON output only.
+            """
         }
     ]
 
