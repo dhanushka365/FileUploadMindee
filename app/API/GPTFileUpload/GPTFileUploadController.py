@@ -216,7 +216,7 @@ class GPTFileUploadController(MethodResource, Resource):
         except Exception as e:
             if final_file_path  and os.path.exists(final_file_path ):
                 os.remove(final_file_path )
-            return {'message': 'Failed to process file with Mindee', 'error': str(e)}, 500
+            return {'message': 'Failed to process file with GPT', 'error': str(e)}, 500
 
 
 # Company keywords

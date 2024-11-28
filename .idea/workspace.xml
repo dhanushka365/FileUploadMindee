@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="changes committed">
-      <change beforePath="$PROJECT_DIR$/app/API/GPTFileUpload/GPTFileUploadController.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/API/GPTFileUpload/GPTFileUploadController.py" afterDir="false" />
-    </list>
+    <list default="true" id="8acb2518-53f4-4ed1-8717-8279dd6b2caf" name="Changes" comment="changes committed" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -420,7 +418,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732783289993</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732796664543</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1732796664543</updated>
+    </task>
+    <task id="LOCAL-00034" summary="changes committed">
+      <option name="closed" value="true" />
+      <created>1732797097199</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1732797097199</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
