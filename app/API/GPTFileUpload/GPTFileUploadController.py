@@ -176,7 +176,7 @@ class GPTFileUploadController(MethodResource, Resource):
     @doc(description='Light GPT PDFs Upload endpoint', tags=['Light GPT PDFs Endpoint'])
     @use_kwargs(GPTFileUploadSchema, location='files')
     def post(self, file):
-        global response
+        global response, json_content, final_file_path
         if not file:
             return {'message': 'No file part'}, 400
         if file.filename == '':
@@ -208,13 +208,13 @@ class GPTFileUploadController(MethodResource, Resource):
                 print(f"Failed to send webhook: {e}")
 
             return {
-                'message': response.json()
-            }, 200
-        except requests.RequestException as r:
-            return {
-                'message': 'Failed to send data to webhook',
-                'error': str(r)
-            }, 500
+                'result': json_content
+            }, 201
+
+        except Exception as e:
+            if final_file_path  and os.path.exists(final_file_path ):
+                os.remove(final_file_path )
+            return {'message': 'Failed to process file with Mindee', 'error': str(e)}, 500
 
 
 # Company keywords
