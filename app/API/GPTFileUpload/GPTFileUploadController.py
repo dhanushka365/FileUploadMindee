@@ -93,6 +93,8 @@ def generate_json_from_text(api_key, input_text):
                 "Here in the final output json 'fault_detail' is a short sentence about the work order. "
                 "Here in the final output json 'instruction_notes' is a detailed description of the work order, including the issue"
                 "what to do, customer wishes, and any special notes or prices. "
+                "please don't extract smarter appliances LTD related emails as 'shipppingemail' , 'paymentbuyeremail' or 'email'"
+                "please don't use this data in my final response they are smarter appliances LTD related details  Smarter Appliances Ltd Smarter Appliances Ltd 136-137, High Street Ilfracombe EX34 9EZ"
                 "Here in the final output json 'shippingcompanyname' should be the company name for billing if applicable. "
                 "Here in the final output json 'type' indicates whether the work order is a repair or a replacement. Always in the final json response type should contain the only repair or replacement according to the work order type "
                 "In BASE PROPERTY SPECIALISTS LTD work orders  'Problem reported' is the place to extract details for 'fault_detail' and the 'Description' is the place to extract details for 'instruction_notes' "
