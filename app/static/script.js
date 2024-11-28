@@ -15,6 +15,9 @@ const pdfPreview = document.getElementById('pdfPreview');
 const pdfFrame = document.getElementById('pdfFrame');
 const dataFields = document.getElementById('dataFields');
 const submitDataButton = document.getElementById('dataForm').querySelector('button');
+const header = document.querySelector('header');
+const footer = document.querySelector('footer');
+const togglePreview = document.getElementById('togglePreview');
 
 let totalFiles = 0;
 let completedFiles = 0;
@@ -78,7 +81,8 @@ const populateDataFields = (jsonResponse) => {
     };
 
     processData(jsonResponse); // Start processing from the root object
-
+    header.style.display = 'none';  // Hide header
+    footer.style.display = 'none';  // Hide footer
     // Show the result section with form and PDF preview
     resultSection.classList.remove('hidden');
 
@@ -311,6 +315,7 @@ const submitDataToWebhook = (jsonData) => {
                 showNotification(`Data submitted to the webhook successfully! Response:\n${JSON.stringify(response, null, 2)}`, 'success');
                 toggleFileUploadBox(true);
                 resultSection.classList.add('hidden');
+
                 console.log("Server Response:", xhr.responseText);  // Log server response for verification
             }catch (e) {
                 console.error("Response could not be parsed as JSON:", xhr.responseText);

@@ -8,14 +8,25 @@
   font-family: "Inter", sans-serif;
 }
 
+/* Body Styling */
 body {
   display: flex;
-  align-items: center;
-  padding: 15px;
-  justify-content: center;
+  flex-direction: column;
   min-height: 100vh;
   background: #5145BA;
-    overflow: hidden; /* Prevent body from scrolling if not necessary */
+  color: #333;
+  justify-content: space-between; /* Ensures footer stays at bottom */
+}
+
+/* Main Content */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Vertically centers content */
+  padding: 15px;
+  max-width: 800px;
+  margin: 0 auto;
+  flex: 1;
 }
 
 .file-uploader {
@@ -476,3 +487,142 @@ button:active {
     height: 50vh; /* Adjust height on smaller screens */
   }
 }
+
+/* Footer Styling */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 15px 20px;
+  margin-top: auto; /* Push footer to the bottom */
+}
+
+.footer p {
+  font-size: 0.9rem;
+}
+
+/* Header Styling */
+.header {
+  background-color: #5145BA;
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Container for the toggle and label */
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Styling for the label before the toggle */
+.toggle-label {
+  margin-right: 8px; /* Space between "Preview" and tooltip */
+  font-size: 16px;
+  color: #333;
+}
+
+/* Tooltip icon styling */
+.tooltip {
+  position: relative;
+  margin: 0 12px; /* Adjust space between the tooltip icon and the toggle button */
+}
+
+.tooltip i {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* Tooltip visibility on hover */
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}
+
+/* Toggle Switch Styling */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+     width: 60px;
+     height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(37, 216, 31, 0.76);
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+
+h5 {
+  text-align: center;
+  color: #333;
+}
+
+
+
+

@@ -9,7 +9,29 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <script src="script.js" defer></script>
   </head>
-  <body>
+ <body>
+       <!-- Header Section -->
+<header class="header">
+  <div class="header-content">
+    <h1 class="header-title">Work Order Uploader</h1>
+    <div class="header-actions">
+      <div class="toggle-container">
+          <span class="toggle-label"><h5>Preview & Edit</h5></span>
+        <div class="tooltip">
+          <i class="bx bx-info-circle"></i>
+          <span class="tooltip-text">Enable preview and editing of the uploaded work orders.</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="togglePreview">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <main>
     <div class="file-uploader">
       <div class="uploader-header">
         <h2 class="uploader-title">Upload You Work Orders - DEV Instance</h2>
@@ -46,5 +68,11 @@
       <span class="notification-message"></span>
       <button class="notification-close">&times;</button>
     </div>
-  </body>
+  </main>
+
+ <!-- Footer Section -->
+  <footer class="footer">
+    <p>&copy; 2024 Smarter Appliances | All Rights Reserved</p>
+  </footer>
+</body>
 </html>
