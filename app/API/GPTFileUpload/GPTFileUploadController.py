@@ -208,7 +208,7 @@ class GPTFileUploadController(MethodResource, Resource):
                 print(f"Failed to send webhook: {e}")
 
             return {
-                'message': 'Data Send to the webhook Successfully'
+                'message': response.json()
             }, 200
         except requests.RequestException as r:
             return {
