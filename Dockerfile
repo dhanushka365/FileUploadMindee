@@ -11,4 +11,4 @@ RUN apt-get install openssl
 
 EXPOSE 8001
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8001", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8002", "app:app"]
