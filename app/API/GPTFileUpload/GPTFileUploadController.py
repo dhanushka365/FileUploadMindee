@@ -84,6 +84,7 @@ def generate_json_from_text(api_key, input_text):
         {
             "role": "system",
             "content": (
+                "never use sales@smarterappliances.co.uk' in final response it is our company smarter appliances LTD email"
                 "You are an assistant that extracts structured data from unstructured text. "
                 "Your task is to extract relevant details and format them as JSON in the specified format. "
                 "Here in the final output json 'paymentbillingname' is the landlord's name. "
