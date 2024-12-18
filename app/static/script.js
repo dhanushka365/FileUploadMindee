@@ -7,7 +7,6 @@ const fileSubmitButton = document.querySelector(".file-submit-button");
 const notification = document.getElementById('notification');
 const notificationMessage = document.querySelector('.notification-message');
 const notificationClose = document.querySelector('.notification-close');
-const messageDiv = document.getElementById('message');
 
 let totalFiles = 0;
 let completedFiles = 0;
@@ -33,6 +32,13 @@ const createFileItemHTML = (file, index) => {
                         <button class="cancel-button" data-index="${index}">
                             <i class="bx bx-x"></i>
                         </button>
+                    </div>
+                    <div class="file-dropdown-wrapper">
+                        <select class="file-dropdown" data-index="${index}">
+                            <option value="Option1">Option 1</option>
+                            <option value="Option2">Option 2</option>
+                            <option value="Option3">Option 3</option>
+                        </select>
                     </div>
                 </div>
             </li>`;
