@@ -196,6 +196,8 @@ class GPTFileUploadController(MethodResource, Resource):
         if not filename.lower().endswith('.pdf'):
             return {'message': 'Only PDF files are allowed.'}, 400
         try:
+            # Retrieve client_id from form data
+            client_name = request.form.get('client_name')
             temp_file_path = save_file(file)
             company_name = extract_info_from_pdf(temp_file_path)
             if company_name == "not found":

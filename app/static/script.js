@@ -140,6 +140,20 @@ const handleFileUploading = () => {
     const formData = new FormData();
     formData.append("file", file);
 
+    const dropdown = document.querySelector(`#file-item-${index} .file-dropdown`);
+      // Fetch both client ID and client name
+    const selectedClientId = dropdown ? dropdown.value : "";
+    const selectedClientName = dropdown ? dropdown.options[dropdown.selectedIndex].text : "";
+    //showNotification(`Selected Client: ${selectedClientName}`, "success");
+    if (!selectedClientId) {
+      showNotification(`Error: No client selected for file ${file.name}.`, "error");
+      return;
+    }
+
+     // Append client ID and client name to FormData
+    formData.append("client_id", selectedClientId);
+    formData.append("client_name", selectedClientName);
+
     const currentFileItem = document.querySelector(`#file-item-${index}`);
 
     xhr.upload.addEventListener("progress", (e) => {
