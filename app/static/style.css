@@ -52,12 +52,14 @@ body {
 
 /* File Upload Section Styling */
 .file-uploader {
-    width: 550px;
+    width: 600px;
     background: #fff;
     border-radius: 5px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    margin: 30px auto;
+    margin: 40px auto;
     padding: 20px;
+    justify-content: center;  /* Vertically center */
+    align-items: center;      /* Horizontally center */
 }
 
 .file-uploader .uploader-header {
@@ -163,7 +165,7 @@ body {
 }
 
 .file-uploader .file-upload-box {
-    margin: 10px 20px 20px;
+     margin: 40px 0 20px;
     border-radius: 5px;
     min-height: 100px;
     display: flex;
@@ -171,6 +173,8 @@ body {
     justify-content: center;
     border: 2px dashed #B1ADD4;
     transition: all 0.2s ease;
+    width: 100%; /* Ensure the box takes the full width of the parent */
+    max-width: 600px; /* Optional: limits the max width of the upload box */
 }
 
 .file-uploader .file-upload-box.active {
