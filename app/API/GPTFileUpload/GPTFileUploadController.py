@@ -14,16 +14,21 @@ try:
     from urllib.parse import urljoin  # For creating full URLs
     import openai
     import json
+    from dotenv import load_dotenv
+    import os
 
     print("All imports are ok............")
 except Exception as e:
     print(f"Error: {e}")
 
 # Base directories
-#BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
+# BASE_DIRECTORY = os.path.join(os.getcwd(), "./app/static/temporary")
 BASE_DIRECTORY = os.path.join(os.getcwd(), "./static/temporary")
 # Ensure directories exist
 os.makedirs(BASE_DIRECTORY, exist_ok=True)
+
+# Load the .env.dev file
+load_dotenv()
 
 
 # Marshmallow schema for file upload
@@ -85,6 +90,7 @@ def generate_json_from_text(api_key, input_text):
             "role": "system",
             "content": (
                 "never use sales@smarterappliances.co.uk' in final response it is our company smarter appliances LTD email"
+                "As the appliance type i need the item the work order is for.please give me the appliance name in the response"
                 "You are an assistant that extracts structured data from unstructured text. "
                 "Your task is to extract relevant details and format them as JSON in the specified format. "
                 "Here in the final output json 'paymentbillingname' is the landlord's name. "
@@ -127,12 +133,13 @@ def generate_json_from_text(api_key, input_text):
               "shippingpostalcode": "",
               "shippingstreet": "",
               "type": "",
-              "shippingcompanyname": ""
+              "shippingcompanyname": "",
+              "appliance_type":"",
             }}
-            
+
             Text:
             {input_text}
-            
+
             Ensure all details are filled correctly based on the provided text. Provide the JSON output only.
             """
         }
@@ -141,7 +148,8 @@ def generate_json_from_text(api_key, input_text):
     try:
         # Send request to the OpenAI API
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model=os.getenv("GPT_MODEL"),  # Default to gpt-4 if not set,
+            # model="gpt-4",
             messages=messages,
             max_tokens=500,
             temperature=0
@@ -191,18 +199,20 @@ class GPTFileUploadController(MethodResource, Resource):
             temp_file_path = save_file(file)
             company_name = extract_info_from_pdf(temp_file_path)
             if company_name == "not found":
-                return {'message': 'No valid company name found in the PDF'}, 400
+                company_name = "unknown_company"
+                print("Warning: No valid company name found in the PDF. Using 'unknown_company' as fallback.")
+                # return {'message': 'No valid company name found in the PDF'}, 400
 
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             extracted_texts = extract_text_with_pymupdf(final_file_path)
-
+            api_key = os.getenv("MY_API_KEY")
             result = generate_json_from_text(api_key, extracted_texts)
 
             # Construct accessible URLs
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
             file_url = urljoin(base_url, os.path.relpath(final_file_path, BASE_DIRECTORY))
             result['file_path'] = file_url
-            webhook_url = "https://dev.smarterappliances.co.uk/Clientresponse/testWorkorders"
+            webhook_url = os.getenv("WEBHOOK_URL")
             try:
                 response = requests.post(webhook_url, json=result)
                 json_content = response.json()
@@ -215,8 +225,8 @@ class GPTFileUploadController(MethodResource, Resource):
             }, 201
 
         except Exception as e:
-            if final_file_path  and os.path.exists(final_file_path ):
-                os.remove(final_file_path )
+            if final_file_path and os.path.exists(final_file_path):
+                os.remove(final_file_path)
             return {'message': 'Failed to process file with GPT', 'error': str(e)}, 500
 
 

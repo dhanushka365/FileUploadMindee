@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Work Order Uploader</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="style.css" rel="stylesheet">
     <!-- Linking Box Icon for Icons -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    <script src="script.js" defer></script>
-  </head>
-  <body>
-    <div class="file-uploader">
-      <div class="uploader-header">
-        <h2 class="uploader-title">Upload You Work Orders - DEV INSTANCE</h2>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script defer src="script.js"></script>
+</head>
+<body>
+<div class="file-uploader">
+    <div class="uploader-header">
+        <h3 class="uploader-title">Upload You Work Orders - DEV INSTANCE()</h3>
         <h4 class="file-completed-status"></h4>
-      </div>
-      <ul class="file-list"></ul>
-      <div class="file-upload-box">
+    </div>
+    <ul class="file-list"></ul>
+    <div class="file-upload-box">
         <h2 class="box-title">
-          <span class="file-instruction">Drag files here or</span>
-          <span class="file-browse-button">browse</span>
+            <span class="file-instruction">Drag files here or</span>
+            <span class="file-browse-button">browse</span>
         </h2>
-        <input class="file-browse-input" type="file" multiple hidden>
-      </div>
-      <!-- Submit button for files -->
-      <button class="file-submit-button">Submit Files</button>
+        <input class="file-browse-input" hidden multiple type="file">
     </div>
+    <!-- Submit button for files -->
+    <button class="file-submit-button">Submit Files</button>
+</div>
 
-    <!-- Notification for upload success/error -->
-    <div class="notification" id="notification" style="display: none;">
-      <span class="notification-message"></span>
-      <button class="notification-close">&times;</button>
-    </div>
-  </body>
+<!-- Notification for upload success/error -->
+<div class="notification" id="notification" style="display: none;">
+    <span class="notification-message"></span>
+    <button class="notification-close">&times;</button>
+</div>
+</body>
 </html>

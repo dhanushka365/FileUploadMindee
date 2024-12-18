@@ -14,7 +14,7 @@ let completedFiles = 0;
 let selectedFiles = [];
 
 const createFileItemHTML = (file, index) => {
-    const { name, size } = file;
+    const {name, size} = file;
     const extension = name.split(".").pop();
     const formattedFileSize = size >= 1024 * 1024 ? `${(size / (1024 * 1024)).toFixed(2)} MB` : `${(size / 1024).toFixed(2)} KB`;
 
@@ -127,8 +127,8 @@ const handleFileUploading = () => {
 
             // Check if the upload was successful
             if (xhr.status === 201) {
-                  //showNotification(`Success: ${response.message}`, 'success');
-                  showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
+                //showNotification(`Success: ${response.message}`, 'success');
+                showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
             } else {
                 showNotification(`Error: ${response.message}`, 'error');
             }
@@ -166,3 +166,27 @@ fileBrowseButton.addEventListener("click", () => fileBrowseInput.click());
 
 // Submit button event listener
 fileSubmitButton.addEventListener("click", () => handleFileUploading());
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Determine the environment based on the host port
+    const port = window.location.port;
+    const environment = port === "8001" ? "PROD" : "DEV";
+
+    // Fetch the container ID from the backend
+    fetch("/health_check") // Endpoint to retrieve the Docker container ID
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch container ID");
+            }
+            return response.text(); // Get the response as plain text
+        })
+        .then(containerId => {
+            // Update the title with the container ID and environment
+            const uploaderTitle = document.querySelector(".uploader-title");
+            uploaderTitle.textContent = `Upload Your Work Orders - ${environment} INSTANCE (${containerId})`;
+        })
+        .catch(error => {
+            console.error("Error fetching container ID:", error);
+        });
+});
+
