@@ -117,10 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Corrected search function
     searchInput.addEventListener("input", () => {
         const searchValue = searchInput.value.toLowerCase();
         const filteredData = clientData.filter(client =>
-            client.company_name.toLowerCase().includes(searchValue)
+            client.clientname.toLowerCase().includes(searchValue)
         );
         renderTable(filteredData, 1, rowsPerPage);
     });
