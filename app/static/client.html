@@ -5,12 +5,14 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Work Order Uploader</title>
     <link href="style.css" rel="stylesheet">
-    <!-- Linking Box Icon for Icons -->
+    <link href="clientstyle.css" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <script defer src="script.js"></script>
+    <style>
+        /* Insert the updated CSS here */
+    </style>
+    <script defer src="clientscript.js"></script>
 </head>
 <body>
-    <!-- Header Section -->
     <header class="site-header">
         <div class="header-container">
             <h1 class="header-title">Work Order Uploader</h1>
@@ -23,14 +25,34 @@
         </div>
     </header>
 
+    <h1 style="text-align: center;">Client List</h1>
+    <div>
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by Client Name"
+        />
+    </div>
+    <div class="loader" id="loader">Loading data...</div>
+    <table id="clientTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client Name</th>
+                <th>Commission</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted dynamically -->
+        </tbody>
+    </table>
+    <div id="pagination"></div>
 
-
-
-    <!-- Footer Section -->
     <footer class="site-footer">
         <div class="footer-container">
             <p>&copy; 2024 Smarter Appliances. All rights reserved.</p>
         </div>
     </footer>
+    <script src="clientscript.js"></script>
 </body>
 </html>
