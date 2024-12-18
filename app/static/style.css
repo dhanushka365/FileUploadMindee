@@ -222,3 +222,22 @@ body {
 .notification-message {
     font-weight: bold;
 }
+
+.file-dropdown-wrapper {
+  height: 30px;           /* Adjust the height to fit the dropdown */
+  padding: 0;             /* Remove any padding */
+  margin: 0;              /* Remove any margin if present */
+}
+
+.file-dropdown {
+  max-height: 100px;      /* Adjust the max height of the dropdown list */
+  overflow-y: auto;       /* Enable scrolling if the content exceeds the max height */
+  font-size: 12px;        /* Adjust font size for better visibility */
+  padding: 1;             /* Remove padding inside the dropdown */
+}
+
+.file-dropdown option {
+  padding: 5px;  /* Reduce padding inside each option */
+  font-size: 12px; /* Optional: Adjust font size for the options */
+}
+

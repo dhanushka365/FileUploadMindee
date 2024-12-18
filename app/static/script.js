@@ -4,195 +4,193 @@ const fileBrowseInput = document.querySelector(".file-browse-input");
 const fileUploadBox = document.querySelector(".file-upload-box");
 const fileCompletedStatus = document.querySelector(".file-completed-status");
 const fileSubmitButton = document.querySelector(".file-submit-button");
-const notification = document.getElementById('notification');
-const notificationMessage = document.querySelector('.notification-message');
-const notificationClose = document.querySelector('.notification-close');
+const notification = document.getElementById("notification");
+const notificationMessage = document.querySelector(".notification-message");
+const notificationClose = document.querySelector(".notification-close");
 
 let totalFiles = 0;
 let completedFiles = 0;
 let selectedFiles = [];
+let dropdownOptionsCache = ""; // Cache dropdown options for reuse
 
-const createFileItemHTML = (file, index) => {
-    const {name, size} = file;
-    const extension = name.split(".").pop();
-    const formattedFileSize = size >= 1024 * 1024 ? `${(size / (1024 * 1024)).toFixed(2)} MB` : `${(size / 1024).toFixed(2)} KB`;
+// Utility function to format file sizes
+const formatFileSize = (size) => {
+  return size >= 1024 * 1024
+    ? `${(size / (1024 * 1024)).toFixed(2)} MB`
+    : `${(size / 1024).toFixed(2)} KB`;
+};
 
-    return `<li class="file-item" id="file-item-${index}">
-                <div class="file-extension">${extension}</div>
-                <div class="file-content-wrapper">
-                    <div class="file-content">
-                        <div class="file-details">
-                            <h5 class="file-name">${name}</h5>
-                            <div class="file-info">
-                                <small class="file-size">0 MB / ${formattedFileSize}</small>
-                                <small class="file-divider">•</small>
-                                <small class="file-status">Ready</small>
-                            </div>
+// Fetch dropdown options once and cache them
+const fetchDropdownOptions = async () => {
+  if (dropdownOptionsCache) return dropdownOptionsCache; // Return cached options
+
+  try {
+    const response = await fetch("https://v3.dandsappliances.com/index.php?r=api/clients-list"); // Replace with your API endpoint
+    if (!response.ok) throw new Error("Failed to fetch dropdown options");
+    const options = await response.json(); // Assuming the response is a JSON array
+    dropdownOptionsCache = `
+      <option value="" disabled selected>Select client here</option>
+      ${options
+        .map((option) => `<option value="${option.id}">${option.clientname}</option>`)
+        .join("")}
+    `;
+    return dropdownOptionsCache;
+  } catch (error) {
+    console.error("Error fetching dropdown options:", error);
+    return `<option value="error">Error fetching options</option>`;
+  }
+};
+
+// Create HTML for a file item
+const createFileItemHTML = async (file, index) => {
+  const { name, size } = file;
+  const extension = name.split(".").pop();
+  const formattedFileSize = formatFileSize(size);
+
+  // Fetch dropdown options
+  const dropdownOptions = await fetchDropdownOptions();
+
+  return `<li class="file-item" id="file-item-${index}">
+            <div class="file-extension">${extension}</div>
+            <div class="file-content-wrapper">
+                <div class="file-content">
+                    <div class="file-details">
+                        <h5 class="file-name">${name}</h5>
+                        <div class="file-info">
+                            <small class="file-size">0 MB / ${formattedFileSize}</small>
+                            <small class="file-divider">•</small>
+                            <small class="file-status">Ready</small>
                         </div>
-                        <button class="cancel-button" data-index="${index}">
-                            <i class="bx bx-x"></i>
-                        </button>
                     </div>
-                    <div class="file-dropdown-wrapper">
-                        <select class="file-dropdown" data-index="${index}">
-                            <option value="Option1">Option 1</option>
-                            <option value="Option2">Option 2</option>
-                            <option value="Option3">Option 3</option>
-                        </select>
-                    </div>
+                    <button class="cancel-button" data-index="${index}">
+                        <i class="bx bx-x"></i>
+                    </button>
                 </div>
-            </li>`;
+                <div class="file-dropdown-wrapper">
+                    <select class="file-dropdown" data-index="${index}">
+                        ${dropdownOptions}
+                    </select>
+                </div>
+            </div>
+        </li>`;
 };
 
+// Remove a file and update UI
 const removeFile = (index) => {
-    // Remove the file from the selectedFiles array
-    selectedFiles.splice(index, 1);
+  selectedFiles.splice(index, 1); // Remove file from array
+  document.getElementById(`file-item-${index}`)?.remove(); // Remove from DOM
 
-    // Remove the corresponding file item from the HTML list
-    const fileItem = document.getElementById(`file-item-${index}`);
-    if (fileItem) {
-        fileItem.remove();
-    }
+  // Update indices and reassign IDs
+  document.querySelectorAll(".file-item").forEach((item, newIndex) => {
+    item.id = `file-item-${newIndex}`;
+    const cancelButton = item.querySelector(".cancel-button");
+    cancelButton.dataset.index = newIndex;
+    cancelButton.onclick = () => removeFile(newIndex);
+  });
 
-    // Update totalFiles and the status
-    totalFiles = selectedFiles.length;
-    completedFiles = Math.min(completedFiles, totalFiles); // Ensure completedFiles doesn't exceed totalFiles
-
-    if (totalFiles === 0) {
-        fileCompletedStatus.innerText = "0 / 0 files ready for submission";
-    } else {
-        fileCompletedStatus.innerText = `${completedFiles} / ${totalFiles} files ready for submission`;
-    }
-
-    document.querySelectorAll(".file-item").forEach((item, newIndex) => {
-        item.id = `file-item-${newIndex}`;
-        item.querySelector(".cancel-button").setAttribute('data-index', newIndex);
-        item.querySelector(".cancel-button").addEventListener('click', () => removeFile(newIndex));
-    });
+  totalFiles = selectedFiles.length;
+  completedFiles = Math.min(completedFiles, totalFiles);
+  updateFileStatus();
 };
 
-const handleSelectedFiles = ([...files]) => {
-    if (files.length === 0) return;
-
-    files.forEach((file) => {
-        const index = selectedFiles.length; // Use the length of selectedFiles array as the index
-        selectedFiles.push(file);
-        const fileItemHTML = createFileItemHTML(file, index);
-        fileList.insertAdjacentHTML("afterbegin", fileItemHTML);
-
-        // Add event listener for the cancel button to remove the file
-        const cancelButton = document.querySelector(`#file-item-${index} .cancel-button`);
-        cancelButton.addEventListener('click', () => removeFile(index));
-    });
-
-    totalFiles = selectedFiles.length; // Update total file count
-    fileCompletedStatus.innerText = `${completedFiles} / ${totalFiles} files ready for submission`;
+// Update file status display
+const updateFileStatus = () => {
+  fileCompletedStatus.innerText =
+    totalFiles === 0
+      ? "0 / 0 files ready for submission"
+      : `${completedFiles} / ${totalFiles} files ready for submission`;
 };
 
+// Handle selected files
+const handleSelectedFiles = async (files) => {
+  for (const file of files) {
+    const index = selectedFiles.length;
+    selectedFiles.push(file);
+
+    const fileItemHTML = await createFileItemHTML(file, index);
+    fileList.insertAdjacentHTML("beforeend", fileItemHTML);
+
+    // Attach event listener to cancel button
+    const cancelButton = document.querySelector(`#file-item-${index} .cancel-button`);
+    cancelButton.onclick = () => removeFile(index);
+  }
+
+  totalFiles = selectedFiles.length;
+  updateFileStatus();
+};
+
+// Show notification
 const showNotification = (message, type) => {
-    notificationMessage.innerText = message;
-    notification.classList.add(type); // 'success' or 'error'
-    notification.style.display = 'block';
+  notificationMessage.innerText = message;
+  notification.className = `notification ${type}`; // Add 'success' or 'error'
+  notification.style.display = "block";
 
-    // Hide the notification after 5 seconds
-    setTimeout(() => {
-        notification.style.display = 'none';
-        notification.classList.remove(type);
-    }, 5000);
+  setTimeout(() => (notification.style.display = "none"), 5000);
 };
 
-notificationClose.addEventListener('click', () => {
-    notification.style.display = 'none';
-});
-
+// Upload files
 const handleFileUploading = () => {
-    if (selectedFiles.length === 0) {
-        showNotification('Error: No files selected for upload. Please select a file.', 'error');
-        return;
-    }
+  if (selectedFiles.length === 0) {
+    showNotification("Error: No files selected for upload. Please select a file.", "error");
+    return;
+  }
 
-    selectedFiles.forEach((file, index) => {
-        const xhr = new XMLHttpRequest();
-        const formData = new FormData();
-        formData.append("file", file);
+  selectedFiles.forEach((file, index) => {
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData();
+    formData.append("file", file);
 
-        const currentFileItem = document.querySelector(`#file-item-${index}`);
+    const currentFileItem = document.querySelector(`#file-item-${index}`);
 
-        xhr.upload.addEventListener("progress", (e) => {
-            const fileProgress = Math.round((e.loaded / e.total) * 100);
-            currentFileItem.querySelector(".file-status").innerText = `Uploading: ${fileProgress}%`;
-        });
-
-        xhr.addEventListener("load", () => {
-            completedFiles++;
-            currentFileItem.querySelector(".file-status").innerText = "Completed";
-            fileCompletedStatus.innerText = `${completedFiles} / ${totalFiles} files uploaded`;
-
-            // Get the response from the Mindee API
-            const response = JSON.parse(xhr.responseText);
-
-            // Check if the upload was successful
-            if (xhr.status === 201) {
-                //showNotification(`Success: ${response.message}`, 'success');
-                showNotification(`Success:\n ${JSON.stringify(response.result, null, 2)}`, 'success');
-            } else {
-                showNotification(`Error: ${response.message}`, 'error');
-            }
-        });
-
-        xhr.addEventListener("error", () => {
-            // Show error notification
-            showNotification(`Failed to upload ${file.name}. Please try again.`, 'error');
-        });
-
-        xhr.open("POST", "/GPTUpload", true);
-        xhr.send(formData);
+    xhr.upload.addEventListener("progress", (e) => {
+      const progress = Math.round((e.loaded / e.total) * 100);
+      currentFileItem.querySelector(".file-status").innerText = `Uploading: ${progress}%`;
     });
+
+    xhr.onload = () => {
+      completedFiles++;
+      currentFileItem.querySelector(".file-status").innerText = "Completed";
+      updateFileStatus();
+
+      const response = JSON.parse(xhr.responseText);
+      if (xhr.status === 201) {
+        showNotification(`Success:\n${JSON.stringify(response.result, null, 2)}`, "success");
+      } else {
+        showNotification(`Error: ${response.message}`, "error");
+      }
+    };
+
+    xhr.onerror = () => {
+      showNotification(`Failed to upload ${file.name}. Please try again.`, "error");
+    };
+
+    xhr.open("POST", "/GPTUpload", true);
+    xhr.send(formData);
+  });
 };
 
 // Event listeners
 fileUploadBox.addEventListener("drop", (e) => {
-    e.preventDefault();
-    handleSelectedFiles(e.dataTransfer.files);
-    fileUploadBox.classList.remove("active");
+  e.preventDefault();
+  handleSelectedFiles(e.dataTransfer.files);
+  fileUploadBox.classList.remove("active");
 });
 
-fileUploadBox.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    fileUploadBox.classList.add("active");
-});
-
-fileUploadBox.addEventListener("dragleave", (e) => {
-    e.preventDefault();
-    fileUploadBox.classList.remove("active");
-});
-
+fileUploadBox.addEventListener("dragover", (e) => e.preventDefault());
+fileUploadBox.addEventListener("dragleave", (e) => fileUploadBox.classList.remove("active"));
 fileBrowseInput.addEventListener("change", (e) => handleSelectedFiles(e.target.files));
 fileBrowseButton.addEventListener("click", () => fileBrowseInput.click());
-
-// Submit button event listener
 fileSubmitButton.addEventListener("click", () => handleFileUploading());
+notificationClose.addEventListener("click", () => (notification.style.display = "none"));
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Determine the environment based on the host port
-    const port = window.location.port;
-    const environment = port === "8001" ? "PROD" : "DEV";
+  const port = window.location.port;
+  const environment = port === "8001" ? "PROD" : "DEV";
 
-    // Fetch the container ID from the backend
-    fetch("/health_check") // Endpoint to retrieve the Docker container ID
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to fetch container ID");
-            }
-            return response.text(); // Get the response as plain text
-        })
-        .then(containerId => {
-            // Update the title with the container ID and environment
-            const uploaderTitle = document.querySelector(".uploader-title");
-            uploaderTitle.textContent = `Upload Your Work Orders - ${environment} INSTANCE (${containerId})`;
-        })
-        .catch(error => {
-            console.error("Error fetching container ID:", error);
-        });
+  fetch("/health_check")
+    .then((response) => (response.ok ? response.text() : Promise.reject("Failed to fetch container ID")))
+    .then((containerId) => {
+      document.querySelector(".uploader-title").textContent = `Upload Your Work Orders - ${environment} INSTANCE (${containerId})`;
+    })
+    .catch((error) => console.error("Error fetching container ID:", error));
 });
-
