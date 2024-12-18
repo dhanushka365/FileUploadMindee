@@ -80,19 +80,26 @@ def extract_info_from_pdf(file_path):
         return "not found"
 
 
-def generate_json_from_text(api_key, input_text):
+def generate_json_from_text(api_key, input_text, client_name=None):
     # Set the OpenAI API key
     openai.api_key = api_key
 
-    # ChatGPT prompt to extract and format data
+    # Dynamically modify the system prompt based on client_name
+    client_prompt = ""
+    if client_name:
+        client_prompt = f"""
+        The received client name is {client_name} is the work order belongs, there for it should be the payment company name in my final output json.
+        please verify all the property manager details in the final output json should also belong to {client_name} this company related persons details.
+        In final output json the email is same as the paymentbuyeremail. please extract all the data with given instructions.
+        """
+
+    # Full system message with the dynamic client details if available
     messages = [
         {
             "role": "system",
             "content": (
-                "never use sales@smarterappliances.co.uk' in final response it is our company smarter appliances LTD email"
+                f"never use sales@smarterappliances.co.uk' in final response it is our company smarter appliances LTD email"
                 "As the appliance type i need the item the work order is for.please give me the appliance name in the response"
-                "You are an assistant that extracts structured data from unstructured text. "
-                "Your task is to extract relevant details and format them as JSON in the specified format. "
                 "Here in the final output json 'paymentbillingname' is the landlord's name. "
                 "Here in the final output json 'paymentponumber' is the work order number. "
                 "Here in the final output json 'shippingcity', 'shippingstreet', and 'shippingpostalcode' are mentioned in the property address. "
@@ -100,13 +107,14 @@ def generate_json_from_text(api_key, input_text):
                 "Here in the final output json 'fault_detail' is a short sentence about the work order. "
                 "Here in the final output json 'instruction_notes' is a detailed description of the work order, including the issue"
                 "what to do, customer wishes, and any special notes or prices. "
-                "please don't extract smarter appliances LTD related emails as 'shipppingemail' , 'paymentbuyeremail' or 'email'"
+                "please don't extract any smarter appliances LTD related emails as 'shipppingemail' , 'paymentbuyeremail' or 'email' "
                 "please don't use this data in my final response they are smarter appliances LTD related details  Smarter Appliances Ltd Smarter Appliances Ltd 136-137, High Street Ilfracombe EX34 9EZ"
                 "Here in the final output json 'shippingcompanyname' should be the company name for billing if applicable. "
                 "Here in the final output json 'type' indicates whether the work order is a repair or a replacement. Always in the final json response type should contain the only repair or replacement according to the work order type "
                 "In BASE PROPERTY SPECIALISTS LTD work orders  'Problem reported' is the place to extract details for 'fault_detail' and the 'Description' is the place to extract details for 'instruction_notes' "
                 "Here in the final output json 'propertymanagerdetails' contains the details of the work manager or the person who instructed the work order."
                 "Here in the final output json 'access_key' means how to get access to the property. It might be via tenant. Like wise if some one need to reach the fault device some time he need to get access to the property. that details should be come here. If its tenant give me a answer like tenant"
+                f"{client_prompt}"
             ),
         },
         {
@@ -148,8 +156,7 @@ def generate_json_from_text(api_key, input_text):
     try:
         # Send request to the OpenAI API
         response = openai.ChatCompletion.create(
-            model=os.getenv("GPT_MODEL"),  # Default to gpt-4 if not set,
-            # model="gpt-4",
+            model=os.getenv("GPT_MODEL"),  # Default to gpt-4 if not set
             messages=messages,
             max_tokens=500,
             temperature=0
@@ -208,7 +215,7 @@ class GPTFileUploadController(MethodResource, Resource):
             final_file_path = move_file_to_company_folder(temp_file_path, company_name, "processed")
             extracted_texts = extract_text_with_pymupdf(final_file_path)
             api_key = os.getenv("MY_API_KEY")
-            result = generate_json_from_text(api_key, extracted_texts)
+            result = generate_json_from_text(api_key, extracted_texts, client_name)
 
             # Construct accessible URLs
             base_url = urljoin(request.host_url, "temporary/")  # Add '/temporary/' after the host
