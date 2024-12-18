@@ -10,27 +10,48 @@
     <script defer src="script.js"></script>
 </head>
 <body>
-<div class="file-uploader">
-    <div class="uploader-header">
-        <h3 class="uploader-title">Upload You Work Orders - DEV INSTANCE()</h3>
-        <h4 class="file-completed-status"></h4>
-    </div>
-    <ul class="file-list"></ul>
-    <div class="file-upload-box">
-        <h2 class="box-title">
-            <span class="file-instruction">Drag files here or</span>
-            <span class="file-browse-button">browse</span>
-        </h2>
-        <input class="file-browse-input" hidden multiple type="file">
-    </div>
-    <!-- Submit button for files -->
-    <button class="file-submit-button">Submit Files</button>
-</div>
+    <!-- Header Section -->
+    <header class="site-header">
+        <div class="header-container">
+            <h1 class="header-title">Work Order Uploader</h1>
+            <nav class="header-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<!-- Notification for upload success/error -->
-<div class="notification" id="notification" style="display: none;">
-    <span class="notification-message"></span>
-    <button class="notification-close">&times;</button>
-</div>
+    <div class="file-uploader">
+        <div class="uploader-header">
+            <h3 class="uploader-title">Upload Your Work Orders - DEV INSTANCE()</h3>
+            <h4 class="file-completed-status"></h4>
+        </div>
+        <ul class="file-list"></ul>
+        <div class="file-upload-box">
+            <h2 class="box-title">
+                <span class="file-instruction">Drag files here or</span>
+                <span class="file-browse-button">browse</span>
+            </h2>
+            <input class="file-browse-input" hidden multiple type="file">
+        </div>
+        <!-- Submit button for files -->
+        <button class="file-submit-button">Submit Files</button>
+    </div>
+
+    <!-- Notification for upload success/error -->
+    <div class="notification" id="notification" style="display: none;">
+        <span class="notification-message"></span>
+        <button class="notification-close">&times;</button>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p>&copy; 2024 Smarter Appliances. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
