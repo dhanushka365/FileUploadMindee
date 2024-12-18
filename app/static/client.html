@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Work Order Uploader</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link href="clientstyle.css" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <style>
-        /* Insert the updated CSS here */
-    </style>
-    <script defer src="clientscript.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -25,34 +21,45 @@
         </div>
     </header>
 
-    <h1 style="text-align: center;">Client List</h1>
-    <div>
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search by Client Name"
-        />
+    <main>
+        <h1 style="text-align: center;">Client List</h1>
+        <div class="toolbar">
+            <button id="createButton">Create Client</button>
+            <input type="text" id="searchInput" placeholder="Search by Client Name" />
+        </div>
+        <div class="loader" id="loader">Loading data...</div>
+        <table id="clientTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client Name</th>
+                    <th>Commission</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted dynamically -->
+            </tbody>
+        </table>
+        <div id="pagination"></div>
+    </main>
+
+    <!-- Popup Form -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-form">
+            <h3>Create New Client</h3>
+            <input type="text" id="companyName" placeholder="Company Name" />
+            <input type="number" id="commission" placeholder="Commission (%)" />
+            <button id="submitButton">Create</button>
+            <button id="closeButton">Close</button>
+        </div>
     </div>
-    <div class="loader" id="loader">Loading data...</div>
-    <table id="clientTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Client Name</th>
-                <th>Commission</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be inserted dynamically -->
-        </tbody>
-    </table>
-    <div id="pagination"></div>
 
     <footer class="site-footer">
         <div class="footer-container">
             <p>&copy; 2024 Smarter Appliances. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="clientscript.js"></script>
 </body>
 </html>
